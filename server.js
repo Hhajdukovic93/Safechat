@@ -30,6 +30,11 @@ io.sockets.on('connection', function(socket){
 
 	// Disconnect 
 	socket.on('disconnect', function(data){
+		
+		users.splice(users.indexOf(socket.username), 1);
+		updateUsernames();
+
+
 		// After disconnection, decrease/pop connection array by one
 		connections.splice(connections.indexOf(socket), 1);
 		// Again, display number of current sockets/connections
@@ -40,7 +45,24 @@ io.sockets.on('connection', function(socket){
 	//  Send messages
 	socket.on('send message', function(data){ //  message is cought here
 		console.log(data); // message written in console
-		io.sockets.emit('new message', {msg: data});  // after that it is emmited
+		io.sockets.emit('new message', {msg: data, user: socket.username});  // after that it is emmited
 	});
-		
+
+
+
+	//  New user
+	socket.on('new user', function(data, callback){ 
+
+		callback(true);
+		socket.username = data;
+		users.push(socket.username);
+
+
+		updateUsernames();
+	});
+
+
+	function updateUsernames(){
+		io.sockets.emit('get users', users)
+	}
 });
