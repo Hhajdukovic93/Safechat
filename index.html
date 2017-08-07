@@ -12,6 +12,9 @@
 
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
+
+
+
 		<style type="text/css">
 			body {
 				margin-top: 50px;
@@ -75,6 +78,7 @@
 
 
 
+
 		<script type="text/javascript">
 			
 			$(function(){
@@ -92,14 +96,21 @@
 				var users = $('#users');
 				var username = $('#username');
 
+				var plainText,
+					cryptText;
+
 				// Do methods after message form is submitted via click on button
 				messageForm.submit(function(e){
 					e.preventDefault();
 					// Display action - message is submitted by user
-					console.log('Message submitted')
+					console.log('Message submitted');
+
+					plainText = message.val();
+
+					cryptText = Encrypt(plainText);
 
 					// Emit message - catch message from textarea with id="message"
-					socket.emit('send message', message.val());
+					socket.emit('send message', cryptText);
 					// Make textarea empty after submit, ready for new message by user
 					message.val('');
 				});
@@ -131,8 +142,98 @@
 					}
 					users.html(html);
 				} );
+
+
+
+
+
+
+
+				function Encrypt(plainText) {
+
+					//  Array with induvidual chars, split strings in chars
+					var array    = [],
+				    	newArray = [];
+
+
+				    //  Uppercase whole text because of matematical operation on chars
+					var uppercasePlainText = plainText.toUpperCase();
+					//  Cast string in chars array
+					array = uppercasePlainText.split("");
+					//  Array length is zero in start (logic)
+					var arraylength = 0;
+
+					// arraylength = array.length;
+					// console.log(arraylength);
+
+					for (var i = 0; i < array.length; i++) {
+						//  Output char by char in array
+						console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
+
+						//  If there is two empty spaces in row that means that text is over
+						if((array[i-1]==' ')&&(array[i]==' ')) {
+							//  Output important message
+							console.log("Enter end!");
+							//  Decrease array length because in this mode after last character first empty 
+							//  space means end of the text and that is one char more than it is needed
+							arraylength--;
+							// First empty space at the end of message, delete it
+							newArray.pop();
+
+							//  (If there is case of two empty spaces in a row) break the loop, because 
+							//  text is over
+							break;
+						}
+						else {
+							//  Increase array length in normal situation
+							arraylength++;
+							//  Put plan text in array for scrypt text, just in case, because than is not empty
+							newArray.push(array[i]);
+						}
+					}
+					//  Display array length
+					//console.log("\n\nDuljina poruke : " + arraylength);
+
+					//  Display array length
+					//console.log("Original poruka : " + array);
+
+
+					for (var j = 0; j < arraylength; j++) {
+
+						var oldCharacter = String.fromCharCode(array[j].charCodeAt()); // just arrayI
+						//console.log("OLD : " + oldCharacter.charCodeAt());
+
+						if (oldCharacter.charCodeAt() > 64) {
+
+							//  Calculate new character - KEY SHIFT
+							var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() + 13);
+
+							//  Take care about situation whene NEW character is greater than Z, it must go from A again
+							if(newCharacter.charCodeAt() > 90)
+							{
+								newCharacter = String.fromCharCode(newCharacter.charCodeAt() - 26);
+							}
+							newArray[j] = newCharacter;
+						}
+						else {
+							newArray[j] = oldCharacter;
+						}
+					}
+
+					//console.log("\n\nKriptirana poruka : " + newArray);
+
+					var cryptText = newArray.toString();
+					cryptText = cryptText.replace(/,/g, "");
+
+					return cryptText;
+			}
+
+
+
+
 			});
 		</script>
+
 
 
 	</body>
