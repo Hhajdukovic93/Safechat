@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-
 	<head>
 		<title>Safechat</title>
 		<meta charset="utf-8">
@@ -12,9 +11,6 @@
 
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
-
-
-
 		<style type="text/css">
 			body {
 				margin-top: 50px;
@@ -22,11 +18,7 @@
 			#messageArea {
 				display: none;
 			}
-
-
 		</style>
-
-
 	</head>
 
 
@@ -35,7 +27,7 @@
 		<div class="container">	
 
 			<!-- First screen for user login -->
-			<div id="userFormArea" class="row">
+			<id id="userFormArea" class="row">
 				<div class="col-sm-12">
 					<form id="userForm">
 						<div class="form-group">
@@ -46,21 +38,17 @@
 						</div>
 					</form>
 				</div>
-
-			</div>
+			</id> <!-- / login row DIV -->
 
 
 			<!-- Second screen for chat -->
-			<div id="messageArea" class="row">
-
+			<id id="messageArea" class="row">
 				<div class="col-sm-4">
 					<div class="well">
 						<h3>Online Users</h3>
 						<ul class ="list-group" id="users"></ul>
 					</div>
 				</div>
-
-
 				<div class="col-sm-8">
 					<div class="chat" id="chat"></div>
 					<form id="messageForm">
@@ -72,76 +60,117 @@
 						</div>
 					</form>
 				</div>
-				
-			</div>
-		</div>
+			</id> <!-- / chat row DIV -->
+
+		</div> <!-- / container -->
 
 
 
 
 		<script type="text/javascript">
 			
-			$(function(){
+			$(function() {
+
 				var socket = io.connect();
 
-				// Chat DIV
-				var chat = $('#chat');
-				// Form
-				var messageForm = $('#messageForm');
-				// Main object - message
-				var message = $('#message');
+				//  First hidden than after login visible
 				var messageArea = $('#messageArea');
+				//  First visible than after login hidden
 				var userFormArea = $('#userFormArea');
-				var userForm = $('#userForm');
+
+				//  Chat space
+				var chat = $('#chat');
+				//  List of active users
 				var users = $('#users');
+
+				//  User login form
+				var userForm = $('#userForm');
+				//  New user
 				var username = $('#username');
 
+				//  Message form
+				var messageForm = $('#messageForm');
+				//  Client message
+				var message = $('#message');
+				
+
+				//  Variables for client messages - used for cryptography
 				var plainText,
 					cryptText;
 
-				// Do methods after message form is submitted via click on button
-				messageForm.submit(function(e){
-					e.preventDefault();
-					// Display action - message is submitted by user
-					console.log('Message submitted');
 
-					plainText = message.val();
-
-					cryptText = Encrypt(plainText);
-
-					// Emit message - catch message from textarea with id="message"
-					socket.emit('send message', cryptText);
-					// Make textarea empty after submit, ready for new message by user
-					message.val('');
-				});
-
-				// Get new message and display it in chat window by adding new DIV
-				socket.on('new message', function(data){
-					chat.append('<div class="well"><strong>'+data.user+'</strong>: '+data.msg+'</div>')
-				});
+				//  Method for user login
+				userForm.submit(function(event) {
 
 
 
-				userForm.submit(function(e){
-					e.preventDefault();
-					console.log('User logged in chat')
+					// Display message in console after new user is online
+					console.log('User : ' + username.val() + ' logged in chat');
+
+					//  Send new user data to server
 					socket.emit('new user', username.val(), function(data){
-						if(data){
+						//  Proceed from login screen to chat screen
+						if(data) {
 							userFormArea.hide();
 							messageArea.show();
 						}
 					});
+					//  Make username input form empty again
 					username.val('');
+
+					event.preventDefault();
 				});
 
 
-				socket.on('get users', function(data){
-					var html = '';
-					for(i=0; i < data.length; i++){
-						html += '<li class="list-group-item">'+data[i]+'</li>'
+				//  List of active user - add to user list in chat app
+				socket.on('get users', function(data) {
+					//  Array for all user/clients active on chat
+					var userList = '';
+					//  Go through user list array and make list item for every user
+					for(i = 0; i < data.length; i++) {
+						userList += '<li class="list-group-item">' + data[i] + '</li>'
 					}
-					users.html(html);
-				} );
+					//  Write userList unorder list to userlist in chat app
+					users.html(userList);
+				});
+
+
+
+				// Method for user communication
+				messageForm.submit(function(event) {
+			
+					//  Get message from FORM textarea
+					plainText = message.val();
+					// Display action - message is submitted by user
+					console.log('Client submitted message');
+
+					// Display real message in client console
+					console.log('Real message : ' + plainText);
+					//  Do crypting
+					cryptText = Encrypt(plainText);
+					console.log('Çrypting on client side...');
+					// Display crypted message in client console
+					console.log('Crypted message : ' + cryptText);
+
+					// Emit message - send message from client to server
+					socket.emit('send message', cryptText);
+
+					// Make textarea empty after submit, ready for new message by user
+					message.val('');
+
+					event.preventDefault();
+				});
+
+
+				// Get new message and display it in chat window by adding new DIV
+				socket.on('new message', function(data) {
+					//  Add new client message to chat window
+					chat.append('<div class="well"><strong>' + data.user + '</strong>: ' + data.msg + '</div>')
+				});
+
+
+
+
 
 
 
@@ -163,8 +192,6 @@
 					//  Array length is zero in start (logic)
 					var arraylength = 0;
 
-					// arraylength = array.length;
-					// console.log(arraylength);
 
 					for (var i = 0; i < array.length; i++) {
 						//  Output char by char in array
@@ -191,17 +218,11 @@
 							newArray.push(array[i]);
 						}
 					}
-					//  Display array length
-					//console.log("\n\nDuljina poruke : " + arraylength);
-
-					//  Display array length
-					//console.log("Original poruka : " + array);
 
 
 					for (var j = 0; j < arraylength; j++) {
 
-						var oldCharacter = String.fromCharCode(array[j].charCodeAt()); // just arrayI
-						//console.log("OLD : " + oldCharacter.charCodeAt());
+						var oldCharacter = String.fromCharCode(array[j].charCodeAt()); 
 
 						if (oldCharacter.charCodeAt() > 64) {
 
@@ -220,9 +241,8 @@
 						}
 					}
 
-					//console.log("\n\nKriptirana poruka : " + newArray);
 
-					var cryptText = newArray.toString();
+					cryptText = newArray.toString();
 					cryptText = cryptText.replace(/,/g, "");
 
 					return cryptText;
@@ -233,7 +253,6 @@
 
 			});
 		</script>
-
 
 
 	</body>

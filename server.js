@@ -13,26 +13,71 @@ connections = [];
 
 //  Server listening on port 3000
 server.listen(process.env.PORT || 3000);
-console.log('Server running...');
+console.log('Server running on port 3000...');
 
+//  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
+//  with the help of a built-in middleware in Express - express.static.
+app.use(express.static('public'));
 
-//  Server sends to clients
+//  Server sends to clients - index.html
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/index.html');
 });
 
 
 
-//  Socket communication
-io.sockets.on('connection', function(socket){
+/*  ------------------------------------------------ *\
+*   SOCKET COMMUNICATION
+\*  ------------------------------------------------ */
+
+io.on('connection', function(socket){
 
 	// After every new connection, increase/push connection array with new one
 	connections.push(socket);
 	// Display number of new sockets/connections to server in console
-	console.log('Connected: %s sockets connected', connections.length)
+	console.log('Connected: %s sockets connected', connections.length);
+
+	//  New user is logged
+	socket.on('new user', function(data, callback){ 
+
+		callback(true);
+		//  Get username from method, preciselly from method data
+		socket.username = data;
+		//  Put new user in users array
+		users.push(socket.username);
+		//  AFter every change redisplay user list
+		updateUsernames();
+	});
+
+	//  Emit new user list using array "users"
+	function updateUsernames(){
+		io.emit('get users', users)
+	}
 
 
-	// Disconnect 
+	
+
+	//  Send messages, message from client is cought here
+	socket.on('send message', function(data){ 
+		//  Message written in console from client to server - crypted
+		console.log("Crypted message : " + data); 
+		//  Decrypt message on server side
+		console.log("Decrypting in process..."); 
+		data = Decrypt(data);
+		//  Display decrypted message in console
+		console.log("Decrypted message : " + data); 
+
+
+		//  After that it is emmited
+		io.emit('new message', {msg: data, user: socket.username});
+	});
+
+
+
+
+
+
+	// Disconnecting 
 	socket.on('disconnect', function(data){
 		
 		//  Delete username from user list after disconnected
@@ -45,45 +90,14 @@ io.sockets.on('connection', function(socket){
 		// Again, display number of current sockets/connections
 		console.log('Disconnected: %s sockets connected', connections.length);
 	});
-	
 
-	//  Send messages, message from client is cought here
-	socket.on('send message', function(data){ 
-		//  Message written in console - not crypted
-		console.log("Crypted message : " + data); 
-
-
-		console.log("Decrypting in process..."); 
-		data = Decrypt(data);
-
-		console.log("Derypted message : " + data); 
-
-
-		//  After that it is emmited
-		io.sockets.emit('new message', {msg: data, user: socket.username});
-	});
-
-
-
-	//  New user
-	socket.on('new user', function(data, callback){ 
-
-		callback(true);
-		socket.username = data;
-		users.push(socket.username);
-
-
-		updateUsernames();
-	});
-
-
-	function updateUsernames(){
-		io.sockets.emit('get users', users)
-	}
 });
 
 
-// ---------------------------------------------------------------------------------  //
+
+/*  ------------------------------------------------ *\
+*   Decrypting method
+\*  ------------------------------------------------ */
 
 function Decrypt(cryptText) {
 
@@ -98,12 +112,12 @@ function Decrypt(cryptText) {
 		//  Array length is zero in start (logic)
 		var arraylength = 0;
 
-		// arraylength = array.length;
-		//console.log(arraylength);
-
+		//  Go through array and check for ending
 		for (var i = 0; i < array.length; i++) {
+			//  Output char by char in array
+			console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
 
-			console.log(array[i]);
+			//console.log(array[i]);
 
 			if( (array[i-1]==' ') && (array[i]==' ') ) {
 				console.log("Enter end!");
@@ -117,10 +131,6 @@ function Decrypt(cryptText) {
 			}
 		}
 
-		//  Display array length
-		//console.log("\n\nDuljina poruke : " + arraylength);
-		//  Display array length
-		//console.log("Kriptirana poruka : " + array);
 
 		//  Fill new array with crypted content
 		for (var j = 0; j < (arraylength); j++) {
@@ -148,13 +158,10 @@ function Decrypt(cryptText) {
 
 		}
 
-		//console.log("\n\nOriginal poruka : " + newArray);
-
 		//  Make string from array for display purpose
 		var plainText = newArray.toString();
 		//  Char in array is dividede by semicolos so we need to erase semicolo
 		plainText = plainText.replace(/,/g, "");
 
 		return plainText;
-
 }
