@@ -12,6 +12,10 @@ var server = http.createServer(app);
 //  Node modul for socket communication - socket.io
 var socket_io = require('socket.io');
 var io = socket_io.listen(server);
+//  In-built Express function, just like http
+var path = require('path');
+
+app.use(express.static(path.join(__dirname, '/public')));
 
 
 
@@ -32,12 +36,15 @@ connections = [];
 
 
 
-
 //  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
 //  with the help of a built-in middleware in Express - express.static.
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + 'public'));
 
 
+//app.use(express.static('public'));
+//app.use('/static', express.static(path.join(__dirname, '/public')));
+
+//app.use(express.static(path.join(__dirname, 'public')));
 
 //  Server listening on port 3000
 server.listen(process.env.PORT || 3000);
@@ -50,6 +57,7 @@ console.log('Server running on port 3000...');
 //  Server sends to clients - index.html
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/index.html');
+	//red.render('index');
 	//  res.render('home');  // with handlebars
 });
 

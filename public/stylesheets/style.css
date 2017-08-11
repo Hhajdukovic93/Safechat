@@ -1,0 +1,38 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #CDE;
+  margin-top: 50px;
+  
+}
+
+			
+	.container-fluid {
+		min-height: 90vh;
+	}
+
+		.row {
+
+		}
+
+a {
+  color: #00B7FF;
+}
+
+
+
+#secretFormArea {
+	height: 90vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+
+
+#userFormArea {
+	display: none;
+}
+
+#messageArea {
+	display: none;
+}

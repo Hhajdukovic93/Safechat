@@ -11,27 +11,18 @@
 
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
-		<style type="text/css">
-			body {
-				margin-top: 50px;
-			}
-			#userFormArea {
-				display: none;
-			}
-			#messageArea {
-				display: none;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="stylesheets/style.css"> 
+
 	</head>
 
 
 	<body>
 		
-		<div class="container">	
+		<div class="container-fluid">	
 
 			<!-- Zero screen for secret -->
-			<id id="secretFormArea" class="row">
-				<div class="col-sm-12">
+			<div id="secretFormArea" class="row">
+				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
 					<form id="secretForm">
 						<div class="form-group">
 							<label> Enter Secret Key : </label>
@@ -41,12 +32,12 @@
 						</div>
 					</form>
 				</div>
-			</id> <!-- / login row DIV -->
+			</div> <!-- / login row DIV -->
 
 
 			<!-- First screen for user login -->
-			<id id="userFormArea" class="row">
-				<div class="col-sm-12">
+			<div id="userFormArea" class="row">
+				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
 					<form id="userForm">
 						<div class="form-group">
 							<label> Enter Username : </label>
@@ -56,11 +47,11 @@
 						</div>
 					</form>
 				</div>
-			</id> <!-- / login row DIV -->
+			</div> <!-- / login row DIV -->
 
 
 			<!-- Second screen for chat -->
-			<id id="messageArea" class="row">
+			<div id="messageArea" class="row">
 				<div class="col-sm-4">
 					<div class="well">
 						<h3>Online Users</h3>
@@ -78,234 +69,16 @@
 						</div>
 					</form>
 				</div>
-			</id> <!-- / chat row DIV -->
+			</div> <!-- / chat row DIV -->
 
 		</div> <!-- / container -->
 
 
 
+		<script type="text/javascript" src="javascripts/cryptography.js"></script>
 
-		<script type="text/javascript">
+		<script type="text/javascript" src="javascripts/socket.js"></script>
 			
-			$(function() {
-
-				var socket = io.connect();
-
-
-				//  Default screen for secret input
-				var secretFormArea = $('#secretFormArea');
-				//  First visible than after login hidden
-				var userFormArea = $('#userFormArea');
-				//  First hidden than after login visible
-				var messageArea = $('#messageArea');
-				
-
-				//  Chat space
-				var chat = $('#chat');
-				//  List of active users
-				var users = $('#users');
-
-
-				//  Secret key form
-				var secretForm = $('#secretForm');
-				//  User login form
-				var userForm = $('#userForm');
-				//  User secret key guess
-				var secret = $('#secret');
-				//  New user
-				var username = $('#username');
-
-				//  Message form
-				var messageForm = $('#messageForm');
-				//  Client message
-				var message = $('#message');
-				
-
-				//  Variables for client messages - used for cryptography
-				var plainText,
-					cryptText;
-
-
-				//  Method for secret key
-				secretForm.submit(function(event) {
-
-					// Display message in console after new user is online
-					console.log('Secret key submitted');
-
-					var userSecretKeyInput = secret.val();
-					console.log(userSecretKeyInput);
-
-
-					if (userSecretKeyInput == 'enigma') {
-
-						secretFormArea.hide();
-						userFormArea.show();
-
-						console.log("Succed with secret key");
-
-					} else {
-						console.log("Failed with secret key");
-					}
-
-					//  Make username input form empty again
-					secret.val('');
-
-					event.preventDefault();
-				});
-
-
-				//  Method for user login
-				userForm.submit(function(event) {
-
-					// Display message in console after new user is online
-					console.log('User : ' + username.val() + ' logged in chat');
-
-					//  Send new user data to server
-					socket.emit('new user', username.val(), function(data){
-						//  Proceed from login screen to chat screen
-						if(data) {
-							userFormArea.hide();
-							messageArea.show();
-						}
-					});
-					//  Make username input form empty again
-					username.val('');
-
-					event.preventDefault();
-				});
-
-
-				//  List of active user - add to user list in chat app
-				socket.on('get users', function(data) {
-					//  Array for all user/clients active on chat
-					var userList = '';
-					//  Go through user list array and make list item for every user
-					for(i = 0; i < data.length; i++) {
-						userList += '<li class="list-group-item">' + data[i] + '</li>'
-					}
-					//  Write userList unorder list to userlist in chat app
-					users.html(userList);
-				});
-
-
-
-				// Method for user communication
-				messageForm.submit(function(event) {
-			
-					//  Get message from FORM textarea
-					plainText = message.val();
-					// Display action - message is submitted by user
-					console.log('Client submitted message');
-
-					// Display real message in client console
-					console.log('Real message : ' + plainText);
-					//  Do crypting
-					cryptText = Encrypt(plainText);
-					console.log('Çrypting on client side...');
-					// Display crypted message in client console
-					console.log('Crypted message : ' + cryptText);
-
-					// Emit message - send message from client to server
-					socket.emit('send message', cryptText);
-
-					// Make textarea empty after submit, ready for new message by user
-					message.val('');
-
-					event.preventDefault();
-				});
-
-
-				// Get new message and display it in chat window by adding new DIV
-				socket.on('new message', function(data) {
-					//  Add new client message to chat window
-					chat.append('<div class="well"><strong>' + data.user + '</strong>: ' + data.msg + '</div>')
-				});
-
-
-
-
-
-
-
-
-
-
-
-				function Encrypt(plainText) {
-
-					//  Array with induvidual chars, split strings in chars
-					var array    = [],
-				    	newArray = [];
-
-
-				    //  Uppercase whole text because of matematical operation on chars
-					var uppercasePlainText = plainText.toUpperCase();
-					//  Cast string in chars array
-					array = uppercasePlainText.split("");
-					//  Array length is zero in start (logic)
-					var arraylength = 0;
-
-
-					for (var i = 0; i < array.length; i++) {
-						//  Output char by char in array
-						console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
-
-						//  If there is two empty spaces in row that means that text is over
-						if((array[i-1]==' ')&&(array[i]==' ')) {
-							//  Output important message
-							console.log("Enter end!");
-							//  Decrease array length because in this mode after last character first empty 
-							//  space means end of the text and that is one char more than it is needed
-							arraylength--;
-							// First empty space at the end of message, delete it
-							newArray.pop();
-
-							//  (If there is case of two empty spaces in a row) break the loop, because 
-							//  text is over
-							break;
-						}
-						else {
-							//  Increase array length in normal situation
-							arraylength++;
-							//  Put plan text in array for scrypt text, just in case, because than is not empty
-							newArray.push(array[i]);
-						}
-					}
-
-
-					for (var j = 0; j < arraylength; j++) {
-
-						var oldCharacter = String.fromCharCode(array[j].charCodeAt()); 
-
-						if (oldCharacter.charCodeAt() > 64) {
-
-							//  Calculate new character - KEY SHIFT
-							var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() + 13);
-
-							//  Take care about situation whene NEW character is greater than Z, it must go from A again
-							if(newCharacter.charCodeAt() > 90)
-							{
-								newCharacter = String.fromCharCode(newCharacter.charCodeAt() - 26);
-							}
-							newArray[j] = newCharacter;
-						}
-						else {
-							newArray[j] = oldCharacter;
-						}
-					}
-
-
-					cryptText = newArray.toString();
-					cryptText = cryptText.replace(/,/g, "");
-
-					return cryptText;
-				}
-
-			});
-
-
-		</script>
-
 
 	</body>
 
