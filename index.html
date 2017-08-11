@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 	<head>
 		<title>Safechat</title>
@@ -15,6 +15,9 @@
 			body {
 				margin-top: 50px;
 			}
+			#userFormArea {
+				display: none;
+			}
 			#messageArea {
 				display: none;
 			}
@@ -25,6 +28,21 @@
 	<body>
 		
 		<div class="container">	
+
+			<!-- Zero screen for secret -->
+			<id id="secretFormArea" class="row">
+				<div class="col-sm-12">
+					<form id="secretForm">
+						<div class="form-group">
+							<label> Enter Secret Key : </label>
+							<input class="form-control" id="secret"></input>
+							<br/>
+							<input type="submit" class="btn btn-primaty" value="Enter">
+						</div>
+					</form>
+				</div>
+			</id> <!-- / login row DIV -->
+
 
 			<!-- First screen for user login -->
 			<id id="userFormArea" class="row">
@@ -73,18 +91,27 @@
 
 				var socket = io.connect();
 
-				//  First hidden than after login visible
-				var messageArea = $('#messageArea');
+
+				//  Default screen for secret input
+				var secretFormArea = $('#secretFormArea');
 				//  First visible than after login hidden
 				var userFormArea = $('#userFormArea');
+				//  First hidden than after login visible
+				var messageArea = $('#messageArea');
+				
 
 				//  Chat space
 				var chat = $('#chat');
 				//  List of active users
 				var users = $('#users');
 
+
+				//  Secret key form
+				var secretForm = $('#secretForm');
 				//  User login form
 				var userForm = $('#userForm');
+				//  User secret key guess
+				var secret = $('#secret');
 				//  New user
 				var username = $('#username');
 
@@ -99,10 +126,36 @@
 					cryptText;
 
 
+				//  Method for secret key
+				secretForm.submit(function(event) {
+
+					// Display message in console after new user is online
+					console.log('Secret key submitted');
+
+					var userSecretKeyInput = secret.val();
+					console.log(userSecretKeyInput);
+
+
+					if (userSecretKeyInput == 'enigma') {
+
+						secretFormArea.hide();
+						userFormArea.show();
+
+						console.log("Succed with secret key");
+
+					} else {
+						console.log("Failed with secret key");
+					}
+
+					//  Make username input form empty again
+					secret.val('');
+
+					event.preventDefault();
+				});
+
+
 				//  Method for user login
 				userForm.submit(function(event) {
-
-
 
 					// Display message in console after new user is online
 					console.log('User : ' + username.val() + ' logged in chat');
@@ -246,12 +299,11 @@
 					cryptText = cryptText.replace(/,/g, "");
 
 					return cryptText;
-			}
-
-
-
+				}
 
 			});
+
+
 		</script>
 
 

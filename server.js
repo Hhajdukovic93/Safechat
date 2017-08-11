@@ -1,8 +1,23 @@
-var express = require('express');
-var app = express();
+/*  ------------------------------------------------ *\
+*   NODE MODULS
+\*  ------------------------------------------------ */
 
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+//  Import express modul
+var express = require('express');
+var http = require('http');
+//  Make instance of express application
+var app = express();
+//  Make server
+var server = http.createServer(app);
+//  Node modul for socket communication - socket.io
+var socket_io = require('socket.io');
+var io = socket_io.listen(server);
+
+
+
+/*  ------------------------------------------------ *\
+*   SERVER CONFIGURATION
+\*  ------------------------------------------------ */
 
 //  Array for users
 users = [];
@@ -10,18 +25,32 @@ users = [];
 connections = [];
 
 
+//  JADE
+//app.set('view engine', 'jade');
+//app.set('view options', { layout: true });
+//app.set('views', __dirname + '/views');
+
+
+
+
+//  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
+//  with the help of a built-in middleware in Express - express.static.
+app.use(express.static(__dirname + '/public'));
+
+
 
 //  Server listening on port 3000
 server.listen(process.env.PORT || 3000);
 console.log('Server running on port 3000...');
 
-//  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
-//  with the help of a built-in middleware in Express - express.static.
-app.use(express.static('public'));
+/*  ------------------------------------------------ *\
+*   ROUTES
+\*  ------------------------------------------------ */
 
 //  Server sends to clients - index.html
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/index.html');
+	//  res.render('home');  // with handlebars
 });
 
 
@@ -30,27 +59,29 @@ app.get('/', function(req, res) {
 *   SOCKET COMMUNICATION
 \*  ------------------------------------------------ */
 
-io.on('connection', function(socket){
 
+io.on('connection', function(socket) {
 	// After every new connection, increase/push connection array with new one
 	connections.push(socket);
 	// Display number of new sockets/connections to server in console
 	console.log('Connected: %s sockets connected', connections.length);
 
+
+
 	//  New user is logged
-	socket.on('new user', function(data, callback){ 
+	socket.on('new user', function(data, callback) { 
 
 		callback(true);
 		//  Get username from method, preciselly from method data
 		socket.username = data;
 		//  Put new user in users array
 		users.push(socket.username);
-		//  AFter every change redisplay user list
+		//  AFter every change redisplay user list ( ADD )
 		updateUsernames();
 	});
 
-	//  Emit new user list using array "users"
-	function updateUsernames(){
+	//  Emit new user list using array "users" to clients
+	function updateUsernames() {
 		io.emit('get users', users)
 	}
 
@@ -58,7 +89,7 @@ io.on('connection', function(socket){
 	
 
 	//  Send messages, message from client is cought here
-	socket.on('send message', function(data){ 
+	socket.on('send message', function(data)  { 
 		//  Message written in console from client to server - crypted
 		console.log("Crypted message : " + data); 
 		//  Decrypt message on server side
@@ -66,7 +97,6 @@ io.on('connection', function(socket){
 		data = Decrypt(data);
 		//  Display decrypted message in console
 		console.log("Decrypted message : " + data); 
-
 
 		//  After that it is emmited
 		io.emit('new message', {msg: data, user: socket.username});
@@ -82,7 +112,10 @@ io.on('connection', function(socket){
 		
 		//  Delete username from user list after disconnected
 		users.splice(users.indexOf(socket.username), 1);
-		//  Update username list after change
+		//  Display diconnected user
+		console.log('Disconnected user: %s', socket.username);
+
+		//  Update username list after change  ( DELETE )
 		updateUsernames();
 
 		// After disconnection, decrease/pop connection array by one
@@ -90,13 +123,12 @@ io.on('connection', function(socket){
 		// Again, display number of current sockets/connections
 		console.log('Disconnected: %s sockets connected', connections.length);
 	});
-
 });
 
 
 
 /*  ------------------------------------------------ *\
-*   Decrypting method
+*	DECRYPTING METHOD 
 \*  ------------------------------------------------ */
 
 function Decrypt(cryptText) {
