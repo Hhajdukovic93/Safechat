@@ -291,4 +291,21 @@ function Decrypt(cryptText) {
 }
 
 
+
+
+
+
+
+
+
+
 //  Export all methods, especially Encrypt and Decrypt
+
+
+
+
+
+
+
+
+

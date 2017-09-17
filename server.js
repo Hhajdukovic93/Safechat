@@ -2,11 +2,13 @@
 *   NODE MODULS
 \*  ------------------------------------------------ */
 
-//  In-built Express function
+//  In-built Express modules
 var path = require('path');
 var http = require('http');
+var fs = require('fs');
 
-//  ExpressJS modul
+
+//  ExpressJS module
 var express = require('express');
 //  Make instance of express application
 var app = express();
@@ -14,13 +16,16 @@ var app = express();
 //  Make server
 var server = http.createServer(app);
 
-//  Node modul for socket communication 
+//  Node module for socket communication 
 var socket_io = require('socket.io');
 var io = socket_io.listen(server);
 
-//  ADD BODY PARSER for reading body of HTTP request !!!
-//var bodyParser = require('body-parser');
-//app.use(bodyParser.urlencoded({ extended: true}));
+//  Node module for steganography
+var stego = require('stegosaurus');
+
+//  Node module for reading HTTP body content
+var bodyParser = require('body-parser');
+
 
 //  MONGO DB User register
 //var Person = require('./Person.js');
@@ -63,6 +68,10 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 //  Penn
 //  app.use('/public', express.static('files'));  //  files = public ?
+
+
+app.use(bodyParser.urlencoded({ extended: true}));
+
 
 //  Server listening on port 3000
 server.listen(process.env.PORT || 3000);
@@ -294,3 +303,31 @@ function Decrypt(cryptText) {
 	return plainText;
 }
 
+
+
+/*  ------------------------------------------------ *\
+*	STEGANOGRAPHY
+\*  ------------------------------------------------ */
+
+var original_png = "./public/images/matrix.png";		 // The original png file. 
+var generated_png = "out.png";		 // The resulting file. 
+
+
+var message_string = "Alan Turing"; // The message we're encoding. 
+ 
+//  Write message inside image
+stego.encodeString(original_png, generated_png, message_string, function(err){
+
+	console.log("Inside STEGO");
+
+    if (err) { 
+    	throw err; 
+    }
+    console.log("Wrote png to: ", generated_png);
+ 
+    // Now let's decode that. 
+    stego.decode(generated_png,message_string.length,function(message){
+        console.log("Decoded message: ", message);
+    });
+ 
+});

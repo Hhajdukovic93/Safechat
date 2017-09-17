@@ -11,7 +11,9 @@
   "author": "@hajduk",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.1",
+    "express": "*",
     "socket.io": "*",
-    "express": "*"
+    "stegosaurus": "^0.1.2"
   }
 }
