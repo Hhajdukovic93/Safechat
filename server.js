@@ -5,7 +5,7 @@
 //  In-built Express modules
 var path = require('path');
 var http = require('http');
-var fs = require('fs');
+var fs  = require('fs');
 
 
 //  ExpressJS module
@@ -20,17 +20,12 @@ var server = http.createServer(app);
 var socket_io = require('socket.io');
 var io = socket_io.listen(server);
 
-
 //  Node module for reading HTTP body content
 var bodyParser = require('body-parser');
 
 
 //  MONGO DB User register
 //var Person = require('./Person.js');
-
-//var pero = require('./person');
-
-//console.log(pero.test());
 
 
 
@@ -42,7 +37,7 @@ var bodyParser = require('body-parser');
 var cryptographyMethods = require('./public/javascripts/cryptography');
 
 //  Node module for steganography
-var steganographyMethods = require('./public/javascripts/stego');
+var steganographyMethods = require('./public/javascripts/steganography');
 
 
 
@@ -67,18 +62,15 @@ app.use(express.static(path.join(__dirname, '/public')));
 //app.use(express.static('public'));
 //app.use('/static', express.static(path.join(__dirname, '/public')));
 //app.use(express.static(path.join(__dirname, 'public')));
-
-//  Penn
-//  app.use('/public', express.static('files'));  //  files = public ?
+//app.use('/public', express.static('files'));  //  files = public ?
 
 
+//  Enable using HTTP body content 
 app.use(bodyParser.urlencoded({ extended: true}));
-
 
 //  Server listening on port 3000
 server.listen(process.env.PORT || 3000);
 console.log('Safechat server is running on port 3000...');
-
 
 
 
@@ -95,15 +87,11 @@ app.use('/', function(req, res) {
 
 	//  Inside VIEW subdirextory/folder
 	//red.render('index'); // with handlebars, pug, ejs
-
 	//  Pass arguments using JS objects
 	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
-
 	//  REDIRECT
 	//res.redirect('/views/pero.html');
-
 });
-
 
 /*
 app.use('/login', function(req, res) {
@@ -236,8 +224,7 @@ io.on('connection', function(socket) {
 *	STEGANOGRAPHY
 \*  ------------------------------------------------ */
 
-
-//  Call method from my module
+//  Invoke steagnography method from my module
 steganographyMethods.writeInImage();
 
 
@@ -252,6 +239,7 @@ steganographyMethods.writeInImage();
 test = function() {
 	console.log("I am inside of server.js..");
 }
+
 exports.test = test;
 
 
