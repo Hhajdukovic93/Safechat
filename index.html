@@ -4,15 +4,10 @@
 	<head>
 		<title>Safechat</title>
 		<meta charset="utf-8">
-
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-
 		<link rel="stylesheet" type="text/css" href="stylesheets/style.css"> 
-
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 	</head>
 
 
@@ -21,12 +16,12 @@
 		<div class="container-fluid">	
 
 			<!-- Zero screen for secret -->
-			<div id="secretFormArea" class="row">
+			<div id="cipherArea" class="row">
 				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
-					<form id="secretForm">
+					<form id="cipherForm">
 						<div class="form-group">
 							<label> Enter Secret Key : </label>
-							<input class="form-control" id="secret"></input>
+							<input class="form-control" id="cipher"></input>
 							<br/>
 							<input type="submit" class="btn btn-primaty" value="Enter">
 						</div>
@@ -36,7 +31,7 @@
 
 
 			<!-- First screen for user login -->
-			<div id="userFormArea" class="row">
+			<div id="userArea" class="row">
 				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
 					<form id="userForm">
 						<div class="form-group">
@@ -74,12 +69,8 @@
 		</div> <!-- / container -->
 
 
-
-		<script type="text/javascript" src="javascripts/cryptography.js"></script>
-
-		<script type="text/javascript" src="javascripts/socket.js"></script>
-			
-
+		<script type="text/javascript" src="javascripts/developer.js"></script>
+		
 	</body>
 
 </html>

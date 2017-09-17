@@ -2,25 +2,154 @@
 *   NODE MODULS
 \*  ------------------------------------------------ */
 
-//  Import express modul
-var express = require('express');
+//  In-built Express function
+var path = require('path');
 var http = require('http');
+
+//  ExpressJS modul
+var express = require('express');
 //  Make instance of express application
 var app = express();
+
 //  Make server
 var server = http.createServer(app);
-//  Node modul for socket communication - socket.io
+
+//  Node modul for socket communication 
 var socket_io = require('socket.io');
 var io = socket_io.listen(server);
-//  In-built Express function, just like http
-var path = require('path');
 
-app.use(express.static(path.join(__dirname, '/public')));
+//  ADD BODY PARSER for reading body of HTTP request !!!
+//var bodyParser = require('body-parser');
+//app.use(bodyParser.urlencoded({ extended: true}));
+
+//  MONGO DB User register
+//var Person = require('./Person.js');
+
+
+
+
+
+/*  ------------------------------------------------ *\
+*   MY MODULS
+\*  ------------------------------------------------ */
+
+//var cryptography = require('./public/javascripts/developer');
+
+
+
 
 
 
 /*  ------------------------------------------------ *\
 *   SERVER CONFIGURATION
+\*  ------------------------------------------------ */
+
+//  JADE, EJS, Handlebars
+//app.set('view engine', 'jade');
+
+//app.set('view options', { layout: true });
+//app.set('views', __dirname + '/views');
+
+
+
+//  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
+//  with the help of a built-in middleware in Express - express.static.
+app.use(express.static(path.join(__dirname, '/public')));
+
+//app.use(express.static(__dirname + 'public'));
+//app.use(express.static('public'));
+//app.use('/static', express.static(path.join(__dirname, '/public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+
+//  Penn
+//  app.use('/public', express.static('files'));  //  files = public ?
+
+//  Server listening on port 3000
+server.listen(process.env.PORT || 3000);
+console.log('Safechat server is running on port 3000...');
+
+
+
+
+
+
+/*  ------------------------------------------------ *\
+*   ROUTES
+\*  ------------------------------------------------ */
+
+//  Server sends to clients - index.html
+app.use('/', function(req, res) {
+	res.type('html').status(200);
+	res.sendFile(__dirname + '/index.html');
+
+	//  Inside VIEW subdirextory/folder
+	//red.render('index'); // with handlebars, pug, ejs
+
+	//  Pass arguments using JS objects
+	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
+
+	//  REDIRECT
+	//res.redirect('/views/pero.html');
+
+});
+
+
+/*
+app.use('/login', function(req, res) {
+	res.type('html').status(200);
+	res.sendFile(__dirname + '/login.html');
+});
+app.use('/chat', function(req, res) {
+	res.type('html').status(200);
+	res.sendFile(__dirname + '/chat.html');
+});
+*/
+
+
+
+/*
+//  ROUTE FOR CREATING USERS
+app.use('/create', function(req, res) {
+	var newPerson = new Person ({
+		name: req.body.name,
+		age: req.body.age,
+	});
+
+	newPerson.save( function(err) { 
+		if (err) {
+		    res.type('html').status(500);
+		    res.send('Error: ' + err);
+		}
+		else {
+		    res.render('created', {person : newPerson});
+		}
+	}); 
+});
+
+app.use('/created', function(req, res) {
+	res.type('html').status(200);
+	res.send('User created');
+});
+
+*/
+
+
+/*
+//  All kind of handle form !!!
+app.use('/handleForm', function(req, res) {
+	res.sendFile(__dirname + '/index.html');
+	red.render('index');
+	res.render('home');  // with handlebars
+
+	res.send("Form is handled...");
+});
+*/
+
+
+
+
+/*  ------------------------------------------------ *\
+*   SOCKET COMMUNICATION
 \*  ------------------------------------------------ */
 
 //  Array for users
@@ -29,54 +158,14 @@ users = [];
 connections = [];
 
 
-//  JADE
-//app.set('view engine', 'jade');
-//app.set('view options', { layout: true });
-//app.set('views', __dirname + '/views');
-
-
-
-//  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
-//  with the help of a built-in middleware in Express - express.static.
-//app.use(express.static(__dirname + 'public'));
-
-
-//app.use(express.static('public'));
-//app.use('/static', express.static(path.join(__dirname, '/public')));
-
-//app.use(express.static(path.join(__dirname, 'public')));
-
-//  Server listening on port 3000
-server.listen(process.env.PORT || 3000);
-console.log('Server running on port 3000...');
-
-/*  ------------------------------------------------ *\
-*   ROUTES
-\*  ------------------------------------------------ */
-
-//  Server sends to clients - index.html
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/index.html');
-	//red.render('index');
-	//  res.render('home');  // with handlebars
-});
-
-
-
-/*  ------------------------------------------------ *\
-*   SOCKET COMMUNICATION
-\*  ------------------------------------------------ */
-
-
 io.on('connection', function(socket) {
+
 	// After every new connection, increase/push connection array with new one
 	connections.push(socket);
 	// Display number of new sockets/connections to server in console
 	console.log('Connected: %s sockets connected', connections.length);
 
-
-
-	//  New user is logged
+	//  Users
 	socket.on('new user', function(data, callback) { 
 
 		callback(true);
@@ -94,25 +183,19 @@ io.on('connection', function(socket) {
 	}
 
 
-	
-
-	//  Send messages, message from client is cought here
+	//  Messages
 	socket.on('send message', function(data)  { 
 		//  Message written in console from client to server - crypted
 		console.log("Crypted message : " + data); 
 		//  Decrypt message on server side
 		console.log("Decrypting in process..."); 
+		// Takae care about this problem !!!!!!!!!!
 		data = Decrypt(data);
 		//  Display decrypted message in console
 		console.log("Decrypted message : " + data); 
-
 		//  After that it is emmited
-		io.emit('new message', {msg: data, user: socket.username});
+		io.emit('new message', {user: socket.username, msg: data});
 	});
-
-
-
-
 
 
 	// Disconnecting 
@@ -131,9 +214,14 @@ io.on('connection', function(socket) {
 		// Again, display number of current sockets/connections
 		console.log('Disconnected: %s sockets connected', connections.length);
 	});
+
 });
 
 
+
+
+//  Take care about this problem !!!!!!
+//  Export and require
 
 /*  ------------------------------------------------ *\
 *	DECRYPTING METHOD 
@@ -141,9 +229,9 @@ io.on('connection', function(socket) {
 
 function Decrypt(cryptText) {
 
-		//  Array with induvidual chars, split strings in chars
-		var array    = [],
-			newArray = [];
+	//  Array with induvidual chars, split strings in chars
+	var array    = [],
+		newArray = [];
 
 		//  Uppercase whole text because of matematical operation on chars
 		var uppercaseCryptText = cryptText.toUpperCase();
@@ -198,10 +286,11 @@ function Decrypt(cryptText) {
 
 		}
 
-		//  Make string from array for display purpose
-		var plainText = newArray.toString();
-		//  Char in array is dividede by semicolos so we need to erase semicolo
-		plainText = plainText.replace(/,/g, "");
+	//  Make string from array for display purpose
+	var plainText = newArray.toString();
+	//  Char in array is dividede by semicolos so we need to erase semicolo
+	plainText = plainText.replace(/,/g, "");
 
-		return plainText;
+	return plainText;
 }
+

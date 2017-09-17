@@ -5,34 +5,27 @@ body {
   
 }
 
-			
 	.container-fluid {
 		min-height: 90vh;
 	}
-
-		.row {
-
+	
+		#cipherArea {
+			height: 90vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
+
+		#userArea {
+			display: none;
+		}
+
+		#messageArea {
+			display: none;
+		}
+
+
 
 a {
   color: #00B7FF;
-}
-
-
-
-#secretFormArea {
-	height: 90vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-
-
-#userFormArea {
-	display: none;
-}
-
-#messageArea {
-	display: none;
 }
