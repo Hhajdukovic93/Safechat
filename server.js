@@ -20,8 +20,6 @@ var server = http.createServer(app);
 var socket_io = require('socket.io');
 var io = socket_io.listen(server);
 
-//  Node module for steganography
-var stego = require('stegosaurus');
 
 //  Node module for reading HTTP body content
 var bodyParser = require('body-parser');
@@ -40,9 +38,11 @@ var bodyParser = require('body-parser');
 *   MY MODULS
 \*  ------------------------------------------------ */
 
-//var cryptography = require('./public/javascripts/developer');
+//  Node module for cryptography
+var cryptographyMethods = require('./public/javascripts/cryptography');
 
-
+//  Node module for steganography
+var steganographyMethods = require('./public/javascripts/stego');
 
 
 
@@ -201,7 +201,7 @@ io.on('connection', function(socket) {
 		//  Decrypt message on server side
 		console.log("Decrypting in process..."); 
 		// Takae care about this problem !!!!!!!!!!
-		data = Decrypt(data);
+		data = cryptographyMethods.DecryptMethod(data);
 		//  Display decrypted message in console
 		console.log("Decrypted message : " + data); 
 		
@@ -232,127 +232,26 @@ io.on('connection', function(socket) {
 
 
 
-
-//  Take care about this problem !!!!!!
-//  Export and require
-
-/*  ------------------------------------------------ *\
-*	DECRYPTING METHOD 
-\*  ------------------------------------------------ */
-
-function Decrypt(cryptText) {
-
-	//  Array with induvidual chars, split strings in chars
-	var array    = [],
-		newArray = [];
-
-		//  Uppercase whole text because of matematical operation on chars
-		var uppercaseCryptText = cryptText.toUpperCase();
-		//  Cast string in chars array
-		array = uppercaseCryptText.split("");
-		//  Array length is zero in start (logic)
-		var arraylength = 0;
-
-		//  Go through array and check for ending
-		for (var i = 0; i < array.length; i++) {
-			//  Output char by char in array
-			console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
-
-			//console.log(array[i]);
-
-			if( (array[i-1]==' ') && (array[i]==' ') ) {
-				console.log("Enter end!");
-				arraylength--;
-				newArray.pop();
-				break;
-			}
-			else{
-				arraylength++;
-				newArray.push(array[i]);
-			}
-		}
-
-
-		//  Fill new array with crypted content
-		for (var j = 0; j < (arraylength); j++) {
-
-			var oldCharacter = String.fromCharCode(array[j].charCodeAt());
-			//console.log("OLD : " + oldCharacter.charCodeAt());
-
-			if (oldCharacter.charCodeAt() > 64) {
-
-				//  Calculate new character  KEY SHIFT
-				var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() - 13);
-
-				//  Take care about situation whene NEW character is greater than Z, it musto go from A again
-				if(newCharacter.charCodeAt() < 65)
-				{
-					newCharacter = String.fromCharCode(newCharacter.charCodeAt() + 26);
-				}
-				newArray[j] = newCharacter;
-			}
-
-			else {
-				newArray[j] = oldCharacter;
-			}
-
-
-		}
-
-	//  Make string from array for display purpose
-	var plainText = newArray.toString();
-	//  Char in array is dividede by semicolos so we need to erase semicolo
-	plainText = plainText.replace(/,/g, "");
-
-	return plainText;
-}
-
-
-
 /*  ------------------------------------------------ *\
 *	STEGANOGRAPHY
 \*  ------------------------------------------------ */
 
-var original_png = "./public/images/matrix.png";		 // The original png file. 
-var generated_png = "out.png";		 // The resulting file. 
+
+//  Call method from my module
+steganographyMethods.writeInImage();
 
 
-var message_string = "Alan Turing"; // The message we're encoding. 
- 
-
-//  Write message inside image
-writeInImage = function () {
-
-	stego.encodeString(original_png, generated_png, message_string, function(err) {
-
-		console.log("Inside STEGO");
-
-	    if (err) { 
-	    	throw err; 
-	    }
-	    console.log("Wrote png to: ", generated_png);
-	 
- 		readFromImage();
-	});
-};
-
-readFromImage = function() {
-	
-	// Now let's decode that. 
-	stego.decode(generated_png,message_string.length, function(message){
-	    console.log("Decoded message: ", message);
-	});
-}
 
 
-writeInImage();
 
+
+/*  ------------------------------------------------ *\
+*	TESTING
+\*  ------------------------------------------------ */
 
 test = function() {
 	console.log("I am inside of server.js..");
 }
-
 exports.test = test;
 
-exports.writeInImage = writeInImage;
-exports.readFromImage = readFromImage;
+
