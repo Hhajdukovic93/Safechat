@@ -30,7 +30,9 @@ var bodyParser = require('body-parser');
 //  MONGO DB User register
 //var Person = require('./Person.js');
 
+//var pero = require('./person');
 
+//console.log(pero.test());
 
 
 
@@ -202,6 +204,8 @@ io.on('connection', function(socket) {
 		data = Decrypt(data);
 		//  Display decrypted message in console
 		console.log("Decrypted message : " + data); 
+		
+
 		//  After that it is emmited
 		io.emit('new message', {user: socket.username, msg: data});
 	});
@@ -315,19 +319,40 @@ var generated_png = "out.png";		 // The resulting file.
 
 var message_string = "Alan Turing"; // The message we're encoding. 
  
+
 //  Write message inside image
-stego.encodeString(original_png, generated_png, message_string, function(err){
+writeInImage = function () {
 
-	console.log("Inside STEGO");
+	stego.encodeString(original_png, generated_png, message_string, function(err) {
 
-    if (err) { 
-    	throw err; 
-    }
-    console.log("Wrote png to: ", generated_png);
- 
-    // Now let's decode that. 
-    stego.decode(generated_png,message_string.length,function(message){
-        console.log("Decoded message: ", message);
-    });
- 
-});
+		console.log("Inside STEGO");
+
+	    if (err) { 
+	    	throw err; 
+	    }
+	    console.log("Wrote png to: ", generated_png);
+	 
+ 		readFromImage();
+	});
+};
+
+readFromImage = function() {
+	
+	// Now let's decode that. 
+	stego.decode(generated_png,message_string.length, function(message){
+	    console.log("Decoded message: ", message);
+	});
+}
+
+
+writeInImage();
+
+
+test = function() {
+	console.log("I am inside of server.js..");
+}
+
+exports.test = test;
+
+exports.writeInImage = writeInImage;
+exports.readFromImage = readFromImage;

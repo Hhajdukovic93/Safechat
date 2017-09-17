@@ -1,5 +1,8 @@
 $(function() {
 
+	//var pero = require('./server');
+	//console.log(pero.test());
+
 	//  Object for "on" and "emit"
 	var socket = io.connect();
 
@@ -25,6 +28,7 @@ $(function() {
 	//  Cryptography strings
 	var plainText,
 		cryptText;
+
 
 
 	/*  ------------------------------------------------ *\

@@ -1,7 +1,7 @@
 /*  ------------------------------------------------ *\
 *   MANGOOSE
 \*  ------------------------------------------------ */
-
+/*
 //  Require node module
 var mangoose = require('mangoose');
 
@@ -26,3 +26,10 @@ personSchema.methods.standardizeName = function() {
     this.name = this.name.toLowerCase();
     return this.name;
 }*/
+
+
+/*test = function() {
+	console.log("I am inside of server.js..");
+}
+
+exports.test = test;*/
