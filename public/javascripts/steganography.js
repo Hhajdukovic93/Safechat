@@ -2,7 +2,7 @@ var stego = require('stegosaurus');
 
 
 var original_png   = 'matrix.png'; // The original png file. 
-var generated_png  = 'outServer.png';	   // The resulting file. 
+var generated_png  = 'stegoobject.png';	   // The resulting file. 
 var message_string = 'Alan Turing'; 	   // The message we're encoding. 
  
 
@@ -19,9 +19,9 @@ writeInImage = function () {
 	    if (err) { 
 	    	throw err; 
 	    }
-	    console.log('Wrote png to: ', generated_png);
+	    console.log('Stegoobject is : ', generated_png);
 	 
- 		readFromImage();
+ 		//readFromImage();
 	});
 };
 
@@ -30,7 +30,7 @@ writeInImage = function () {
 /*  ------------------------------------------------ *\
 *	DECODING METHOD 
 \*  ------------------------------------------------ */
-
+/*
 readFromImage = function() {
 	
 	// Now let's decode that. 
@@ -40,7 +40,7 @@ readFromImage = function() {
 };
 
 
-
+*/
 
 exports.writeInImage = writeInImage;
-exports.readFromImage = readFromImage;
+//exports.readFromImage = readFromImage;

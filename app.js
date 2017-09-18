@@ -193,7 +193,7 @@ app.get('/matrix.png', function(req,res) {
 
 
 //  Send JS script to client
-app.get('/outServer.png', function(req,res) {
+app.get('/stegoobject.png', function(req,res) {
 	//res.type('html').status(200);
 	//res.send('Pero je pozvan');
 
@@ -201,7 +201,9 @@ app.get('/outServer.png', function(req,res) {
 	// Tu odradim promjene
 
 	steganographyMethods.writeInImage();
-	res.sendFile(__dirname + '/outServer.png');
+	res.sendFile(__dirname + '/stegoobject.png');
+
+	//  Vratim stranicu koja sadrzava sliku
 });
 /*
 //  Send JS script to client
@@ -318,6 +320,11 @@ io.on('connection', function(socket) {
 
 		//  STEGO
 
+		// Put crypted message in image - create stegoobject
+
+
+
+
 
 
 		//  Decrypt message on server side
@@ -328,20 +335,31 @@ io.on('connection', function(socket) {
 		console.log("Decrypted message : " + data); 
 
 
-		//  STEGO
-
-
 		//  Add image with secret message to response
 		stegoobject = ".outServer.png";
 		console.log('Server - image : ' + stegoobject);
-
-
-
 
 		//   Crypt again
 		data = cryptographyMethods.EncryptMethod(data);
 		
 
+
+
+
+
+
+
+		//  Send stego object as route
+		//  I have stegoobject now
+
+
+		//  TO DO : Make stegoobjcet (image)  transferable
+
+
+
+
+
+		//  NEW MESSAGE can be reviced as image via route
 		//  After that it is emmited
 		io.emit('new message', {user: socket.username, msg: data, image: stegoobject});
 	});
