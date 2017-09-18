@@ -120,6 +120,12 @@ $(function() {
 		// Display crypted message in client console
 		console.log('Crypted message : ' + cryptText);
 
+
+
+		//  STEGOOBJECT must be emitted
+
+
+
 		// Emit message - send message from client to server
 		socket.emit('send message', cryptText);
 
@@ -132,8 +138,16 @@ $(function() {
 
 	// Get new message and display it in chat window by adding new DIV
 	socket.on('new message', function(data) {
+
+		
+		cryptText = data.msg;
+		plainText = Decrypt(cryptText);
+
+
 		//  Add new client message to chat window
-		chat.append('<div class="well"><strong>' + data.user + '</strong>: ' + data.msg + '</div>')
+		console.log('Client - image : ' + data.image);
+		chat.append('<div class="well"><strong>' + data.user + '</strong>: ' + plainText + '</div>'
+			+ data.image + '</div>');
 	});
 
 });

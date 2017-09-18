@@ -2,7 +2,6 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #CDE;
   margin-top: 50px;
-  
 }
 
 	.container-fluid {
@@ -28,4 +27,10 @@ body {
 
 a {
   color: #00B7FF;
+}
+
+.hiddenImage {
+	display: none;
+	//width: 100px;
+	//height: 100px;
 }

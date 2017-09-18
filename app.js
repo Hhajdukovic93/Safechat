@@ -5,7 +5,7 @@
 //  In-built Express modules
 var path = require('path');
 var http = require('http');
-var fs  = require('fs');
+var fs   = require('fs');
 
 
 //  ExpressJS module
@@ -27,7 +27,33 @@ var bodyParser = require('body-parser');
 //  MONGO DB User register
 //var Person = require('./Person.js');
 
+/*
+//  Piler
+var piler = require("piler");
 
+var clientjs = piler.createJSManager();
+var clientcss = piler.createCSSManager();
+
+
+clientjs.bind(app,server); // Make sure to bind to both Express and the server!
+clientcss.bind(app,server);
+
+//clientcss.addFile(__dirname + "/style.css");
+
+clientjs.addUrl("http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js");
+//clientjs.addFile(__dirname + "/client/hello.js");
+
+if (process.env.NODE_ENV === 'development') {
+    clientjs.liveUpdate(clientcss, require('socket.io')(server));
+}
+
+clientjs.addOb({ VERSION: "1.0.0" });
+
+clientjs.addExec(function() {
+    alert("Hello browser" + window.navigator.appVersion);
+});
+
+*/
 
 /*  ------------------------------------------------ *\
 *   MY MODULS
@@ -38,6 +64,65 @@ var cryptographyMethods = require('./public/javascripts/cryptography');
 
 //  Node module for steganography
 var steganographyMethods = require('./public/javascripts/steganography');
+
+
+
+
+// Export node modules to CLIENT
+//var noderequire = require('node-require');
+ 
+// replace <package name>, ... with all package names you would like to export to the client
+// <options> is an object, currently the only supported property is min:true
+// if options.min===true, then a minified version of the package will be loaded if available
+
+//noderequire.export(app,__dirname,["<package name>",...][,<options>);
+
+//noderequire.export(app,__dirname,["<test>"]);
+
+
+
+//var mymodule = require('./mymodule.js');
+
+//clientjs.addFile(__dirname + "/mymodule.js");
+
+//mymodule.test();  
+
+//sys.puts(mymodule.test());
+
+
+
+
+
+/*  ------------------------------------------------ *\
+*   MANGOOSE
+\*  ------------------------------------------------ */
+/*
+//  Require node module
+var mangoose = require('mangoose');
+
+//  Connect with MongoDB 
+mangoose.connect('mongodb://localhost:27017/SafechatDB');
+
+//  Default schema
+var Schema = mangoose.Schema;
+
+var personSchema = new Schema( {
+	name: {type: String, required: true, unique: true},
+	password: {type: String, required: true},
+	age: Number
+});
+
+
+module.exports = mangoose.model('Person', personSchema);
+
+
+/*
+personSchema.methods.standardizeName = function() {
+    this.name = this.name.toLowerCase();
+    return this.name;
+}*/
+
+
 
 
 
@@ -56,7 +141,7 @@ var steganographyMethods = require('./public/javascripts/steganography');
 
 //  Serving files, such as images, CSS, JavaScript and other static files is accomplished 
 //  with the help of a built-in middleware in Express - express.static.
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/public')));  // Used in index.html
 
 //app.use(express.static(__dirname + 'public'));
 //app.use(express.static('public'));
@@ -81,8 +166,8 @@ console.log('Safechat server is running on port 3000...');
 \*  ------------------------------------------------ */
 
 //  Server sends to clients - index.html
-app.use('/', function(req, res) {
-	res.type('html').status(200);
+app.get('/', function(req, res) {
+	//res.type('html').status(200);
 	res.sendFile(__dirname + '/index.html');
 
 	//  Inside VIEW subdirextory/folder
@@ -93,6 +178,16 @@ app.use('/', function(req, res) {
 	//res.redirect('/views/pero.html');
 });
 
+
+//  Send JS script to client
+app.get('/js/bundle.js', function(req,res) {
+	res.sendFile(__dirname + '/js/bundle.js');
+});
+
+//  Send JS script to client
+app.get('/matrix.png', function(req,res) {
+	res.sendFile(__dirname + '/matrix.png');
+});
 /*
 app.use('/login', function(req, res) {
 	res.type('html').status(200);
@@ -148,6 +243,17 @@ app.use('/handleForm', function(req, res) {
 
 
 /*  ------------------------------------------------ *\
+*	STEGANOGRAPHY
+\*  ------------------------------------------------ */
+
+//  Invoke steagnography method from my module
+steganographyMethods.writeInImage();
+
+
+
+
+
+/*  ------------------------------------------------ *\
 *   SOCKET COMMUNICATION
 \*  ------------------------------------------------ */
 
@@ -186,16 +292,36 @@ io.on('connection', function(socket) {
 	socket.on('send message', function(data)  { 
 		//  Message written in console from client to server - crypted
 		console.log("Crypted message : " + data); 
+
+
+		//  STEGO
+
+
+
 		//  Decrypt message on server side
 		console.log("Decrypting in process..."); 
 		// Takae care about this problem !!!!!!!!!!
 		data = cryptographyMethods.DecryptMethod(data);
 		//  Display decrypted message in console
 		console.log("Decrypted message : " + data); 
+
+
+		//  STEGO
+
+
+		//  Add image with secret message to response
+		stegoobject = ".outServer.png";
+		console.log('Server - image : ' + stegoobject);
+
+
+
+
+		//   Crypt again
+		data = cryptographyMethods.EncryptMethod(data);
 		
 
 		//  After that it is emmited
-		io.emit('new message', {user: socket.username, msg: data});
+		io.emit('new message', {user: socket.username, msg: data, image: stegoobject});
 	});
 
 
@@ -220,12 +346,7 @@ io.on('connection', function(socket) {
 
 
 
-/*  ------------------------------------------------ *\
-*	STEGANOGRAPHY
-\*  ------------------------------------------------ */
 
-//  Invoke steagnography method from my module
-steganographyMethods.writeInImage();
 
 
 
@@ -235,11 +356,11 @@ steganographyMethods.writeInImage();
 /*  ------------------------------------------------ *\
 *	TESTING
 \*  ------------------------------------------------ */
-
+/*
 test = function() {
 	console.log("I am inside of server.js..");
 }
 
 exports.test = test;
 
-
+*/

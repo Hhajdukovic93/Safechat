@@ -4,18 +4,31 @@
 	<head>
 		<title>Safechat</title>
 		<meta charset="utf-8">
+
+		<!-- <script src="node-require"></script> -->
+
+
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="stylesheets/style.css"> 
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<!-- 
+		<script src="javascripts/mymodule.js"></script>
+		<script type="text/javascript">
+		    mymodule.test();
+		</script>
+ -->
+
 	</head>
 
 
 	<body>
+
+
 		
 		<div class="container-fluid">	
 
-			<!-- Zero screen for secret -->
+
 			<div id="cipherArea" class="row">
 				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
 					<form id="cipherForm">
@@ -23,14 +36,21 @@
 							<label> Enter Secret Key : </label>
 							<input class="form-control" id="cipher"></input>
 							<br/>
+
+							<br>
+							<input type="file" name="file" id="file" />
+							<img src="images/matrix.png" class="hiddenImage" id="matrix">
+							<br>
+
 							<input type="submit" class="btn btn-primaty" value="Enter">
+
 						</div>
 					</form>
 				</div>
-			</div> <!-- / login row DIV -->
+			</div> 
 
 
-			<!-- First screen for user login -->
+
 			<div id="userArea" class="row">
 				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
 					<form id="userForm">
@@ -42,10 +62,10 @@
 						</div>
 					</form>
 				</div>
-			</div> <!-- / login row DIV -->
+			</div> 
 
 
-			<!-- Second screen for chat -->
+			
 			<div id="messageArea" class="row">
 				<div class="col-sm-4">
 					<div class="well">
@@ -64,12 +84,15 @@
 						</div>
 					</form>
 				</div>
-			</div> <!-- / chat row DIV -->
+			</div>
 
-		</div> <!-- / container -->
+		</div>
+
+
 
 		<!-- Plain Javascript, without "exports"  -->
-		<script type="text/javascript" src="javascripts/developer.js"></script>
+		<script type="text/javascript" src="js/bundle.js"></script>
+		<script type="text/javascript" src="javascripts/developer.js"></script> 
 		
 	</body>
 
