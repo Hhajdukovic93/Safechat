@@ -188,6 +188,28 @@ app.get('/js/bundle.js', function(req,res) {
 app.get('/matrix.png', function(req,res) {
 	res.sendFile(__dirname + '/matrix.png');
 });
+
+
+
+
+//  Send JS script to client
+app.get('/outServer.png', function(req,res) {
+	//res.type('html').status(200);
+	//res.send('Pero je pozvan');
+
+
+	// Tu odradim promjene
+
+	steganographyMethods.writeInImage();
+	res.sendFile(__dirname + '/outServer.png');
+});
+/*
+//  Send JS script to client
+app.get('/public/javascripts/steganography.js', function(req,res) {
+	res.sendFile(__dirname + '/public/javascripts/steganography.js');
+});
+
+*/
 /*
 app.use('/login', function(req, res) {
 	res.type('html').status(200);
