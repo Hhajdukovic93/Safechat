@@ -1,11 +1,78 @@
-/*
- * steganography.js v1.0.2 2016-04-23
- *
- * Copyright (C) 2012 Peter Eigenschink (http://www.peter-eigenschink.at/)
- * Dual-licensed under MIT and Beerware license.
-*/
+var stego = require('stegosaurus');
 
-    function makeCipherFromPlain() {
+
+var original_png   = 'matrix.png'; // The original png file. 
+var generated_png  = 'stegoobject.png';	   // The resulting file. 
+var message_string = 'Alan Turing'; 	   // The message we're encoding. 
+ 
+
+/*  ------------------------------------------------ *\
+*	ENCODING METHOD 
+\*  ------------------------------------------------ */
+
+writeInImage = function () {
+
+	console.log('(S) Pokrenut sam na server strani');
+
+	stego.encodeString(original_png, generated_png, message_string, function(err) {
+
+	    if (err) { 
+	    	throw err; 
+	    }
+	    console.log('Stegoobject is : ', generated_png);
+	 
+ 		readFromImage();
+	});
+};
+
+
+
+/*  ------------------------------------------------ *\
+*	DECODING METHOD 
+\*  ------------------------------------------------ */
+
+readFromImage = function() {
+	
+	// Now let's decode that. 
+	stego.decode(generated_png,message_string.length, function(message){
+	    console.log('Decoded message: ', message);
+	});
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  ------------------------------------------------ *\
+*	STEGANOGRAPHY
+\*  ------------------------------------------------ */
+
+var makeCipherFromPlainSERVER = function () {
       
       var textarea = document.getElementById("text"),
         //  Take image for hide data in it
@@ -31,12 +98,10 @@
 
         download.href=cover.src.replace("image/png", "image/octet-stream");
       }
+}
+  
 
-      // First stegoobject must be created
-      var stegoObjectIsCreated = true;
-    }
-    
-    function makePlainFromCipher() {
+var makePlainFromCipherSERVER = function () {   
 
       var img = document.getElementById("img"),
         cover = document.getElementById("cover"),
@@ -55,20 +120,10 @@
           textarea.value = message.innerHTML;       
         }
       }
-    }
-
-    window.onload = function(){
-      document.getElementById('hide').addEventListener('click', makeCipherFromPlain, false);
-      document.getElementById('read').addEventListener('click', makePlainFromCipher, false);
-    };
+}
 
 
-
-
-
-
-
-console.log("STEGO included");
+var stegSERVER = function() {
 
 ;(function (name, context, factory) {
 
@@ -237,7 +292,7 @@ Cover.prototype.encode = function(message, image, options) {
   var imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height),
       data = imageData.data;
 
-  console.log("Odradio image data");
+  //console.log("Odradio image data");
 
 
 
@@ -253,9 +308,9 @@ Cover.prototype.encode = function(message, image, options) {
     dec, curOverlapping, mask;
 
 
-  console.log("(1) Message :  " + message);
-  console.log("(1) Message length :  " + message.length);
-  console.log("GET NUMBERS FROM MESSAGE");
+  //console.log("(1) Message :  " + message);
+  //console.log("(1) Message length :  " + message.length);
+  //console.log("GET NUMBERS FROM MESSAGE");
 
   var i, j;
   //  Convert text to numbers
@@ -263,7 +318,7 @@ Cover.prototype.encode = function(message, image, options) {
 
     //  Get ASCII
     dec = message.charCodeAt(i) || 0;
-    console.log("Char : " + message[i] + " to ASCII :  " + dec);
+    //console.log("Char : " + message[i] + " to ASCII :  " + dec);
 
     curOverlapping = (overlapping*i)%t;
 
@@ -305,7 +360,7 @@ Cover.prototype.encode = function(message, image, options) {
     oldDec = dec;
     //console.log("ooldDEc :  " + oldDec);
   }
-  console.log("(1) Mod message (W):  " + modMessage);
+  //console.log("(1) Mod message (W):  " + modMessage);
 
 
 
@@ -408,13 +463,13 @@ Cover.prototype.decode = function(image, options) {
       modMessage = [],
       q;
 
-  console.log("(2) Odradio image");
+  //console.log("(2) Odradio image");
 
   var i, k, done;
 
-  console.log("(2) threshold : " + threshold);
-  console.log("(2) Data length: " + data.length);
-  console.log("(2) mod Message: " + modMessage);
+  //console.log("(2) threshold : " + threshold);
+  //console.log("(2) Data length: " + data.length);
+  //console.log("(2) mod Message: " + modMessage);
 
 
   if (threshold == 1) {
@@ -439,9 +494,9 @@ Cover.prototype.decode = function(image, options) {
       bitCount = 0,   
       mask = Math.pow(2, codeUnitSize)-1;
 
-  console.log("(2) Empty message :"+ message);
-  console.log("(2) MOD : "+ modMessage);
-  console.log("(2) MOD length :"+ modMessage.length);
+  //console.log("(2) Empty message :"+ message);
+  //console.log("(2) MOD : "+ modMessage);
+  //console.log("(2) MOD length :"+ modMessage.length);
 
 
   for(i = 0; i < modMessage.length; i+=1) {
@@ -474,3 +529,12 @@ Cover.prototype.decode = function(image, options) {
 };
 return new Cover();
 });
+
+};
+
+exports.writeInImage = writeInImage;
+exports.readFromImage = readFromImage;
+
+exports.stegSERVER = stegSERVER;
+exports.makeCipherFromPlainSERVER = makeCipherFromPlainSERVER;
+exports.makePlainFromCipherSERVER = makePlainFromCipherSERVER;

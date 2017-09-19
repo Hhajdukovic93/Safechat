@@ -19,66 +19,7 @@
 
 	<body>
 
-
-		<div id="main">
-
-
-			<div id="left">
-
-
-				<!-- INPUT IMG -->
-				<h2>Image:</h2>
-				<input id="file" type="file"/><br/>
-
-
-				<!-- INPUT TEXT -->
-				<h2>Text:<span id="capacity"></span></h2>
-				<textarea id="text">Hrvoje is genius</textarea>
-
-
-				<!-- DO METHODS-->
-				<div class="btns">
-					<span id="hide" class="btn">Hide</span>
-					<span id="read" class="btn">Read</span>
-				</div>
-
-
-			</div>
-
-
-
-			<div id="right">
-
-
-				<!-- SHOW IMGAGE -->
-				<div id="original" class="half">
-					<h2>Plain Image:</h2>
-					<!-- DEFAULT IMAGE -->
-					<img id="img" src="/images/test.jpg"/>
-				</div>
-
-
-				<!-- SHOW STEGO IMAGE -->
-				<div id="stego" class="half">
-					<h2>Encoded Image:</h2>
-					<img id="cover" src=""/>
-
-					<a id="download" class="btn small" download="cover.png" rel="nofollow"><strong>D</strong></a>
-
-					<div class="note">Click "D"-button or if it does not work perform right-click to download</div>
-				</div>
-
-				<!-- SHOW  HIDDEN MESSAGE -->
-				<div id="messageArea" class="invisible">
-					<h2>Message:</h2>
-					<div id="message"></div>
-				</div>
-
-			</div>
-
-		</div>
-
-		<!-- <div class="container-fluid">	
+		<div class="container-fluid">	
 
 
 			<div id="cipherArea" class="row">
@@ -88,14 +29,7 @@
 							<label> Enter Secret Key : </label>
 							<input class="form-control" id="cipher"></input>
 							<br/>
-
-							<br>
-							<input type="file" name="file" id="file" />
-							<img src="images/matrix.png" class="hiddenImage" id="matrix">
-							<br>
-
 							<input type="submit" class="btn btn-primaty" value="Enter">
-
 						</div>
 					</form>
 				</div>
@@ -136,16 +70,37 @@
 						</div>
 					</form>
 				</div>
+
+
+				<div id="main">
+
+					<div id="right">
+						<!-- SHOW IMGAGE -->
+						<div id="original" class="half">
+							<h2>Plain Image:</h2>
+							<!-- DEFAULT IMAGE -->
+							<img id="img" src="/images/test.jpg"/>
+						</div>
+						<!-- SHOW STEGO IMAGE -->
+						<div id="stego" class="half">
+							<h2>Encoded Image:</h2>
+							<img id="cover" src=""/>
+						</div>
+					</div>
+
+				</div> <!-- / of main-->
 			</div>
 
-		</div> -->
+
+
+		</div> <!-- / of container fluid -->
 
 
 
 		<!-- Plain Javascript, without "exports"  -->
 		<!-- <script type="text/javascript" src="js/bundle.js"></script> -->
 		<script type="text/javascript" src="javascripts/developer.js"></script> 
-		<script type="text/javascript" src="/javascripts/stego.js"></script>
+<!-- 		<script type="text/javascript" src="/javascripts/stego.js"></script> -->
 		
 	</body>
 

@@ -60,10 +60,10 @@ clientjs.addExec(function() {
 \*  ------------------------------------------------ */
 
 //  Node module for cryptography
-var cryptographyMethods = require('./public/javascripts/cryptography');
+var cryptographyMethods = require('./public/javascripts/serverCryptography');
 
 //  Node module for steganography
-var steganographyMethods = require('./public/javascripts/steganography');
+var steganographyMethods = require('./public/javascripts/serverSteganography.js');
 
 
 
@@ -200,7 +200,7 @@ app.get('/stegoobject.png', function(req,res) {
 
 	// Tu odradim promjene
 
-	steganographyMethods.writeInImage();
+	//steganographyMethods.writeInImage();
 	res.sendFile(__dirname + '/stegoobject.png');
 
 	//  Vratim stranicu koja sadrzava sliku
@@ -266,12 +266,14 @@ app.use('/handleForm', function(req, res) {
 
 
 
+
+
 /*  ------------------------------------------------ *\
 *	STEGANOGRAPHY
 \*  ------------------------------------------------ */
 
 //  Invoke steagnography method from my module
-steganographyMethods.writeInImage();
+//steganographyMethods.writeInImage();
 
 
 
@@ -285,6 +287,15 @@ steganographyMethods.writeInImage();
 users = [];
 //  Array for connections
 connections = [];
+
+
+//  Images
+var plainImage,
+	stegoImage;
+
+//  String for  cipher and plain text
+var plain,
+	cipher;
 
 
 io.on('connection', function(socket) {
@@ -314,25 +325,28 @@ io.on('connection', function(socket) {
 
 	//  Messages
 	socket.on('send message', function(data)  { 
-		//  Message written in console from client to server - crypted
-		console.log("Crypted message : " + data); 
+		
+		//  STEGO is coming
+		//  Message written in console from client to server - crypted inside STEGOOBJECT
+		console.log("--- STEGOOBJECT is here ---"); 
 
-
-		//  STEGO
-
-		// Put crypted message in image - create stegoobject
-
-
-
+		stegoImage = data;
+/*
 
 
 
+		// Revert steganography
+		//cipher = steg.makePlainFromCipher(data); // #IMG defautl, BUT cover
+
+
+		//cipher = steganographyMethods.makePlainFromCipherSERVER(data);
+		
 		//  Decrypt message on server side
 		console.log("Decrypting in process..."); 
 		// Takae care about this problem !!!!!!!!!!
-		data = cryptographyMethods.DecryptMethod(data);
+		plain = cryptographyMethods.DecryptMethod(cipher);
 		//  Display decrypted message in console
-		console.log("Decrypted message : " + data); 
+		console.log("Decrypted message : " + plain); 
 
 
 		//  Add image with secret message to response
@@ -342,26 +356,17 @@ io.on('connection', function(socket) {
 		//   Crypt again
 		data = cryptographyMethods.EncryptMethod(data);
 		
-
-
-
-
-
-
-
 		//  Send stego object as route
 		//  I have stegoobject now
 
-
 		//  TO DO : Make stegoobjcet (image)  transferable
-
-
-
-
+		// Decode
+        
+*/
 
 		//  NEW MESSAGE can be reviced as image via route
 		//  After that it is emmited
-		io.emit('new message', {user: socket.username, msg: data, image: stegoobject});
+		io.emit('new message', {user: socket.username, image: stegoImage});
 	});
 
 
@@ -391,8 +396,6 @@ io.on('connection', function(socket) {
 
 
 
-
-
 /*  ------------------------------------------------ *\
 *	TESTING
 \*  ------------------------------------------------ */
@@ -404,3 +407,6 @@ test = function() {
 exports.test = test;
 
 */
+
+
+
