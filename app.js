@@ -366,7 +366,7 @@ io.on('connection', function(socket) {
 
 		//  NEW MESSAGE can be reviced as image via route
 		//  After that it is emmited
-		io.emit('new message', {user: socket.username, image: stegoImage});
+		io.emit('new message', { user: socket.username, image: stegoImage });
 	});
 
 

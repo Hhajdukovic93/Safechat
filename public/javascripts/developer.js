@@ -113,19 +113,15 @@ $(function() {
 			
 		//  Get message from FORM textarea
 		plainText = message.val();
-		// Display action - message is submitted by user
-		console.log('Client submitted message');
-
 		// Display real message in client console
 		console.log('Real message : ' + plainText);
 		//  Do crypting
 		cryptText = Encrypt(plainText);
-		console.log('Çrypting on client side...');
 		// Display crypted message in client console
 		console.log('Crypted message : ' + cryptText);
 
 
-
+		cover = document.getElementById("cover"),
 
 		// Make stegoobject
         cover.src = steg.encode(cryptText, img, {"width": img.width, "height": img.height});
@@ -135,9 +131,9 @@ $(function() {
 		// Emit message - send message from client to server (STEGOOBJECT)
 		socket.emit('send message', stegoObject);
 
+
 		// Make textarea empty after submit, ready for new message by user
 		message.val('');
-
 		event.preventDefault();
 	});
 
@@ -150,8 +146,13 @@ $(function() {
 		// Define user
 		user = data.user;
 
+		cover = document.getElementById("cover"),
+
 		// Define stegoobject
-		stegoObject = data.image;
+        cover.src = data.image;
+
+
+        stegoObject = cover.src;
 
 		//  Make revert steganography
         cryptText = steg.decode(stegoObject);
@@ -163,15 +164,31 @@ $(function() {
 
 });
 
+/*
+
+
+      var img = document.getElementById("img"),
+        cover = document.getElementById("cover"),
+      
+        message = document.getElementById("message"),
+        textarea = document.getElementById("text");
+
+      if(img && textarea) {
+
+        // Decode
+        message.innerHTML = steg.decode(cover); // #IMG defautl, BUT cover
+
+        if(message.innerHTML !== "") {
+
+          message.parentNode.className="";
+          textarea.value = message.innerHTML;       
+        }
+      }
 
 
 
 
-
-
-
-
-
+*/
 
 
 
