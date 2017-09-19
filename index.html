@@ -4,71 +4,16 @@
 	<head>
 		<title>Safechat</title>
 		<meta charset="utf-8">
-		<meta content="index, follow" name="robots">
-		<meta content="Peter Eigenschink" name="author">
-		<meta content="This demo shows the core functionality of my JavaScript library steganography.js, which provides functions to hide or read data in or from the alpha channel of an image." name="description">
-		<meta content="steganography, information hiding, javascript, html5" name="keywords">
-		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<!-- <script src="node-require"></script> -->
-
-
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css"> 
-
 		<link rel="stylesheet" type="text/css" href="/stylesheets/stego.css">
+		
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-
-		<!-- <script type="text/javascript" src="/javascripts/canvas2image.js"></script> -->
-
-		<script type="text/javascript" src="/javascripts/stego.js"></script>
-
-		<script type="text/javascript">
-
-			//var image = new Image();
-  			//image.crossOrigin = 'anonymous';
-
-
-			//var STEGO_image = "test.jpg";
-			//var STEGO_image = "matrix.png";
-			//var STEGO_image = "shirt.jpg";
-			//console.log(STEGO_image);
-			//var STEGO_image = "shirt.jpg";
-
-			//var image = new Image();
-  			//image.crossOrigin = 'anonymous';
-  			//image.src = "https://s3-us-west-2.amazonaws.com/boom-orca/people-deal-header.png";
-  			//image.src = "/images/test.jpg"
-/*
-			//var STEGO_image_1 = "matrix.png";
-			var secret = "Pero";
-
-
-			console.log("(1) <<< ENCODING >>>");
-			//var slika = steg.encode(secret, image);
-			console.log("(1)  Encode prosao...");
-			//console.log("STEGOOBJECT : " + slika);
-
-
-			// image or strig
-			console.log("(2) <<<  DECODING >>>");
-			//var nesto = steg.decode(slika);
-			console.log("(2)  Decode prosao...");
-			//console.log("HIDEDEN message : " + nesto);
-*/
-
-
-		</script>
-<!-- 
-		<script src="javascripts/mymodule.js"></script>
-		<script type="text/javascript">
-		    mymodule.test();
-		</script>
- -->
-
+		
 	</head>
 
 
@@ -76,25 +21,22 @@
 
 
 		<div id="main">
-<!-- 			<h1>Information Hiding: Steganography done with JavaScript</h1>
-			<div id="description">This little demo here demonstrates the core functionality of my JavaScript library <a href="../"><i>steganography.js</i></a>.</span></div>
 
- -->
+
 			<div id="left">
 
 
-				<!--  ODAVDJE VUČE SLIKE za unos i za gledanje-->
+				<!-- INPUT IMG -->
 				<h2>Image:</h2>
 				<input id="file" type="file"/><br/>
-				<!-- JA ne trebam upload, vec stalno istu sliku-->
 
 
-				<!-- OVDJE VUČE TEKST -->
+				<!-- INPUT TEXT -->
 				<h2>Text:<span id="capacity"></span></h2>
-				<textarea id="text">Hrvoje</textarea>
+				<textarea id="text">Hrvoje is genius</textarea>
 
 
-				<!-- OVDJE DEFINIRA FUNCKIJE KOJE će se pokrenuti -->
+				<!-- DO METHODS-->
 				<div class="btns">
 					<span id="hide" class="btn">Hide</span>
 					<span id="read" class="btn">Read</span>
@@ -105,158 +47,37 @@
 
 
 
-
-
 			<div id="right">
-				<!-- Prikazje orginial sliku-->
+
+
+				<!-- SHOW IMGAGE -->
 				<div id="original" class="half">
 					<h2>Plain Image:</h2>
+					<!-- DEFAULT IMAGE -->
 					<img id="img" src="/images/test.jpg"/>
 				</div>
 
-				<!-- Prikazje STEGO sliku i mogućnost download-->
-				<div id="stego" class="half">
 
+				<!-- SHOW STEGO IMAGE -->
+				<div id="stego" class="half">
 					<h2>Encoded Image:</h2>
 					<img id="cover" src=""/>
 
-					<!-- spremiti negdje gdje kontam-->
 					<a id="download" class="btn small" download="cover.png" rel="nofollow"><strong>D</strong></a>
 
-					<!-- <div class="note">Click "D"-button or if it does not work perform right-click to download</div> -->
+					<div class="note">Click "D"-button or if it does not work perform right-click to download</div>
 				</div>
 
-
-
-				<!-- Prikazuje poruku nakon čitanja-->
+				<!-- SHOW  HIDDEN MESSAGE -->
 				<div id="messageArea" class="invisible">
 					<h2>Message:</h2>
 					<div id="message"></div>
 				</div>
 
-
 			</div>
 
-<!-- 
-			<div class="clear"></div>
-			<div class="footer">&#169; by Peter Eigenschink<br/><a href="http://www.peter-eigenschink.at/">www.peter-eigenschink.at</a><br/>Follow me on Twitter <a href="https://twitter.com/eigenschinkpete">@eigenschinkpete</a></div> -->
 		</div>
 
-
-
-
-		<script type="text/javascript">
-		
-		function handleFileSelect(evt) {
-
-			// Right side elemnts
-			var original = document.getElementById("original"), //  DIV
-				img = document.getElementById("img"), // IMG
-				stego = document.getElementById("stego"), //  DIV		
-				cover = document.getElementById("cover"), // IMG
-				message = document.getElementById("message"); // DIV inside DIV
-
-			if(!original || !stego) return;
-			
-
-			var files = evt.target.files; // FileList object
-
-			// Loop through the FileList and render image files as thumbnails.
-			for (var i = 0, f; f = files[i]; i++) {
-
-				// Only process image files.
-				if (!f.type.match('image.*')) {
-					continue;
-				}
-
-				var reader = new FileReader();
-
-				// Closure to capture the file information.
-				reader.onload = (function(theFile) {
-
-					return function(e) {
-						img.src = e.target.result;
-						img.title = escape(theFile.name);
-						stego.className = "half invisible";
-						cover.src = "";
-						message.innerHTML="";
-						message.parentNode.className="invisible";
-						updateCapacity();
-					};
-				})(f);
-
-				// Read in the image file as a data URL.
-				reader.readAsDataURL(f);
-			}
-		}
-		
-		function hide() {
-
-			var stego = document.getElementById("stego"), //  DIV	
-				img = document.getElementById("img"), // IMG
-				cover = document.getElementById("cover"), // IMG
-				message = document.getElementById("message"), //  DIV	
-				textarea = document.getElementById("text"), // TEXTAREA
-				download = document.getElementById("download"); // A
-
-			if(img && textarea) {
-
-
-				// TU KODIRA
-				//  MESSAHE; IMAGE; OPTIONS
-				cover.src = steg.encode(textarea.value, img, {"width": img.width, "height": img.height});
-				
-				stego.className = "half";
-
-				//B Rise unos
-				message.innerHTML = "";
-
-				message.parentNode.className="invisible";
-				download.href=cover.src.replace("image/png", "image/octet-stream");
-			}
-		}
-		
-		function read() {
-
-			var img = document.getElementById("img"),
-				cover = document.getElementById("cover"),
-				message = document.getElementById("message"),
-				textarea = document.getElementById("text");
-
-			if(img && textarea) {
-
-				//  DEKODIRA
-				message.innerHTML = steg.decode(img);
-
-				if(message.innerHTML !== "") {
-					message.parentNode.className="";
-					textarea.value = message.innerHTML;
-					updateCapacity();
-				}
-			}
-		}
-
-		
-		function updateCapacity() {
-			var img = document.getElementById('img'),
-				textarea = document.getElementById('text');
-
-			if(img && text)
-				document.getElementById('capacity').innerHTML='('+textarea.value.length + '/' + steg.getHidingCapacity(img) +' chars)';
-		}
-	
-	
-		window.onload = function(){
-			document.getElementById('file').addEventListener('change', handleFileSelect, false);
-			document.getElementById('hide').addEventListener('click', hide, false);
-			document.getElementById('read').addEventListener('click', read, false);
-			document.getElementById('text').addEventListener('keyup', updateCapacity, false);
-			hide();
-			updateCapacity();
-		};
-
-
-		</script>
 		<!-- <div class="container-fluid">	
 
 
@@ -324,6 +145,7 @@
 		<!-- Plain Javascript, without "exports"  -->
 		<!-- <script type="text/javascript" src="js/bundle.js"></script> -->
 		<script type="text/javascript" src="javascripts/developer.js"></script> 
+		<script type="text/javascript" src="/javascripts/stego.js"></script>
 		
 	</body>
 

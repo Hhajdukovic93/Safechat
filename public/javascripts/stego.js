@@ -5,6 +5,69 @@
  * Dual-licensed under MIT and Beerware license.
 */
 
+    function makeCipherFromPlain() {
+      
+      var textarea = document.getElementById("text"),
+        //  Take image for hide data in it
+        img = document.getElementById("img"),
+        //  This image is stegoobject
+        cover = document.getElementById("cover"),
+
+        stego = document.getElementById("stego"),
+        message = document.getElementById("message"),
+        download = document.getElementById("download");
+
+      if(img && textarea) {
+
+        //  Encode
+        cover.src = steg.encode(textarea.value, img, {"width": img.width, "height": img.height});
+        //cover.style.width = img.width;
+        //cover.style.height = img.height;
+ 
+        stego.className = "half";
+
+        message.innerHTML = "";
+        message.parentNode.className="invisible";
+
+        download.href=cover.src.replace("image/png", "image/octet-stream");
+      }
+
+      // First stegoobject must be created
+      var stegoObjectIsCreated = true;
+    }
+    
+    function makePlainFromCipher() {
+
+      var img = document.getElementById("img"),
+        cover = document.getElementById("cover"),
+      
+        message = document.getElementById("message"),
+        textarea = document.getElementById("text");
+
+      if(img && textarea) {
+
+        // Decode
+        message.innerHTML = steg.decode(cover); // #IMG defautl, BUT cover
+
+        if(message.innerHTML !== "") {
+
+          message.parentNode.className="";
+          textarea.value = message.innerHTML;       
+        }
+      }
+    }
+
+    window.onload = function(){
+      document.getElementById('hide').addEventListener('click', makeCipherFromPlain, false);
+      document.getElementById('read').addEventListener('click', makePlainFromCipher, false);
+    };
+
+
+
+
+
+
+
 console.log("STEGO included");
 
 ;(function (name, context, factory) {
@@ -89,29 +152,14 @@ Cover.prototype.config = {
             return delimiter;
           },
   "messageCompleted": function(data, i, threshold) {
-
-          console.log("Inside messageCompleted");
-
+          //console.log("Inside messageCompleted");
           var done = true;
 
            for(var j = 0; j < 16 && done; j+=1) {
-
-              //var temp = i+j*4;
-
-              //console.log("----  Data  :" + data[i+j*4]); 
-              //console.log("----  i  :" + i); 
-              //console.log("----  j  :" + j); 
-              //console.log("----  temp  :" + temp); 
-
-              done = (done) && (data[i+j*4] == 255); 
-                  
-              console.log("Done inside check for end loop : " + done);       
+              done = (done) && (data[i+j*4] == 255);                  
+              //console.log("Done inside check for end loop : " + done);       
             }
-
-            //done = false;
-
             return done;
-
           }
 };
 
@@ -145,20 +193,6 @@ Cover.prototype.encode = function(message, image, options) {
   console.log("Options : " + options);
 
 
-  // What is OPTIONS exactully ?
-
-  //  ADD  from net
-/*  var image = new Image();
-  image.crossOrigin = 'anonymous';
-  image.src = "https://s3-us-west-2.amazonaws.com/boom-orca/people-deal-header.png";*/
-  //image.src = "./test.jpg"
-  //SmartCrop.crop(image, {width: 100, height: 100}, function(result){console.log(result);});
-
-
-
-
-
-
   if(image.length) {
     image = util.loadImg(image);
     console.log("Image length : " + image.length);
@@ -180,26 +214,9 @@ Cover.prototype.encode = function(message, image, options) {
 
   if(!t || t < 1 || t > 7) throw "Error: Parameter t = " + t + " is not valid: 0 < t < 8";
 
-
-
-
   //  Make CANVAS
   var shadowCanvas = document.createElement('canvas'),
       shadowCtx = shadowCanvas.getContext('2d');
-
-
-  // MANIPULATE CANVAS
-
-  //var shadowCanvas =document.getElementById("myCanvas");
-  var shadowCtx=shadowCanvas.getContext("2d");
-  shadowCtx.font="30px Arial";
-  shadowCtx.fillText("Your Text",10,50);
-
-  
-
-
-
-
 
 
   //  Canvas properties
@@ -217,14 +234,12 @@ Cover.prototype.encode = function(message, image, options) {
     shadowCtx.drawImage(image, 0, 0);
   }
 
-
-  //  TIP : sometimes fails
   var imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height),
       data = imageData.data;
 
   console.log("Odradio image data");
 
-  //console.log("ImageData data : " + data);
+
 
   // bundlesPerChar ... Count of full t-bit-sized bundles per Character
   // overlapping ... Count of bits of the currently handled character which are not handled during each run
@@ -237,17 +252,10 @@ Cover.prototype.encode = function(message, image, options) {
     decM, oldDec, oldMask, left, right,
     dec, curOverlapping, mask;
 
-  
-
-
- 
 
   console.log("(1) Message :  " + message);
   console.log("(1) Message length :  " + message.length);
-
-
   console.log("GET NUMBERS FROM MESSAGE");
-
 
   var i, j;
   //  Convert text to numbers
@@ -333,12 +341,6 @@ Cover.prototype.encode = function(message, image, options) {
   imageData.data = data;
   shadowCtx.putImageData(imageData, 0, 0);
 
-  //console.log("iamgeData data" + imageData.data);
-  //console.log("shadowCanvas.toDataURL" + shadowCanvas.toDataURL());
-
-  // save img
-  //Canvas2Image.saveAsImage(shadowCanvas, 200, 100, 'png');
-
   return shadowCanvas.toDataURL();
 };
 
@@ -353,23 +355,11 @@ Cover.prototype.encode = function(message, image, options) {
 Cover.prototype.decode = function(image, options) {
 
 
-  //var image = new Image();
-  //image.crossOrigin = 'anonymous';
-  //image.src = image.url
-  //image.src = "https://s3-us-west-2.amazonaws.com/boom-orca/people-deal-header.png";
-  //SmartCrop.crop(image, {width: 100, height: 100}, function(result){console.log(result);});
-
   console.log("(2) BASIC DATA");
   console.log("Image to transfer : " + image);
   //console.log("Image src : " + image.src);
   console.log("Options : " + options);
 
-  //  AD  from net
-  //var image = new Image();
-  //image.crossOrigin = 'anonymous';
-  //image.src = "/images/test.jpg"
-  //image.src = "https://s3-us-west-2.amazonaws.com/boom-orca/people-deal-header.png";
-  //SmartCrop.crop(image, {width: 100, height: 100}, function(result){console.log(result);});
 
   console.log("(2) Unutar decode...");
   
@@ -427,91 +417,21 @@ Cover.prototype.decode = function(image, options) {
   console.log("(2) mod Message: " + modMessage);
 
 
-
-  // PROBLEM !!!
   if (threshold == 1) {
 
     // Check for message end
     for(i=3, done=false; !done && i<data.length && !done; i+=4) { // true = !done(false)
-
-      console.log("<<< TRAŽENJE MODA >>>");
-      console.log("Data.length : " + data.length);
-
-   
-      console.log("Prvi done - before : " + done);
-
-      // Metofa mora vratit true samo kada je kraj, inace false
+      //console.log("<<< TRAŽENJE MODA >>>");
       done = messageCompleted(data, i, threshold);
-      console.log("Drugi done - after: " + done);
 
-      //console.log("(2) Data : " + data);
-      //console.log("(2) i : " + i);
-      //console.log("(2) threshold : " + threshold);
-
-      //  If false, keep searcing for mods
       if(!done) { //  !done is default
-        console.log("Usao sam u MODS : " + done);
+        //console.log("Usao sam u MODS : " + done);
         modMessage.push(data[i]-(255-prime+1));
       }
-
-      //modMessage.push(data[i]-(255-prime+1));
-
-      console.log("(2) MOD inside loop: " + modMessage);
     }
-
-    console.log("Final Done : " + done);
+    //console.log("Final Done : " + done);
   } 
-
-  else {
-    /*for(k = 0, done=false; !done; k+=1) {
-      q = [];
-      for(i=(k*threshold*4)+3; i<(k+1)*threshold*4 && i<data.length && !done; i+=4) {
-        done = messageCompleted(data,i,threshold);
-        if(!done) q.push(data[i]-(255-prime+1)); // at Array index (i-((k*threshold*4)+3))/4
-      }
-      if(q.length === 0) continue;
-      // Calculate the coefficients which are the same for any order of the variable, but different for each argument
-      // i.e. for args[0] coeff=q[0]*(args[1]-args[2])*(args[1]-args[3])*...(args[1]-args[threshold-1])*...*(args[threshold-1]-args[1])*...*(args[threshold-1]-args[threshold-2])
-      var variableCoefficients = (function(i) {
-        if(i >= q.length) return [];
-        return [q[i]*
-        util.product(function(j) {
-        if(j !== i) {
-          return util.product(function(l) {
-          if(l !== j) return (args(j) - args(l));
-          }, q.length);
-        }
-        }, q.length)].concat(arguments.callee(i+1));
-      }(0));
-      // Calculate the coefficients which are different for each order of the variable and for each argument
-      // i.e. for order=0 and args[0] coeff=args[1]*args[2]*...*args[threshold-1]
-      var orderVariableCoefficients = function(order, varIndex) {
-        var workingArgs = util.createArrayFromArgs(args,varIndex,q.length), maxRec = q.length - (order+1);
-        return (function(startIndex, endIndex, recDepth) {
-        var recall = arguments.callee;
-        return util.sum(function(i) {
-          if(recDepth < maxRec)
-          return workingArgs[i]*recall(i+1,startIndex+order+2,recDepth+1);
-        }, endIndex, {"start": startIndex, "defValue": 1});
-        }(0,order+1,0));
-      };
-      // Calculate the common denominator of the whole term
-      var commonDenominator = util.product(function(i) {
-        return util.product(function(j) {
-        if(j !== i) return (args(i) - args(j));
-        }, q.length);
-      }, q.length);
-
-      for(i = 0; i < q.length; i+=1) {
-        modMessage.push((((Math.pow(-1,q.length-(i+1))*util.sum(function(j) {
-        return orderVariableCoefficients(i,j)*
-        variableCoefficients[j];
-        }, q.length))%prime)+prime)%prime); // ?divide by commonDenominator?
-      }
-    }
-  */}
-
-  console.log("Look for message in stegoobject");
+  //console.log("Look for message in stegoobject");
 
   // Look for hidden message in stegoobject
   var message = "", 
@@ -527,21 +447,21 @@ Cover.prototype.decode = function(image, options) {
   for(i = 0; i < modMessage.length; i+=1) {
 
     charCode += modMessage[i] << bitCount;
-    console.log("(2) Char code :"+ charCode);
+    //console.log("(2) Char code :"+ charCode);
 
     bitCount += t;
-    console.log("(2) bitCount :"+ bitCount);
+    //console.log("(2) bitCount :"+ bitCount);
     
     if(bitCount >= codeUnitSize) {
 
       message += String.fromCharCode(charCode & mask);
-      console.log("(2) message :"+ message);
+      //console.log("(2) message :"+ message);
 
       bitCount %= codeUnitSize;
-      console.log("(2) bitCount :"+ bitCount);
+      //console.log("(2) bitCount :"+ bitCount);
 
       charCode = modMessage[i] >> (t-bitCount);
-      console.log("(2) Char code :"+ charCode);
+      //console.log("(2) Char code :"+ charCode);
     }
 
   }
