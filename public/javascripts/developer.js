@@ -113,24 +113,16 @@ $(function() {
 			
 		//  Get message from FORM textarea
 		plainText = message.val();
-		// Display real message in client console
-		console.log('Real message : ' + plainText);
+
 		//  Do crypting
 		cryptText = Encrypt(plainText);
-		// Display crypted message in client console
-		console.log('Crypted message : ' + cryptText);
-
-
-		cover = document.getElementById("cover"),
 
 		// Make stegoobject
         cover.src = steg.encode(cryptText, img, {"width": img.width, "height": img.height});
         stegoObject = cover.src;
 
-
 		// Emit message - send message from client to server (STEGOOBJECT)
 		socket.emit('send message', stegoObject);
-
 
 		// Make textarea empty after submit, ready for new message by user
 		message.val('');
@@ -146,17 +138,16 @@ $(function() {
 		// Define user
 		user = data.user;
 
-		cover = document.getElementById("cover"),
+		cover = document.getElementById("cover");
 
 		// Define stegoobject
         cover.src = data.image;
-
-
         stegoObject = cover.src;
 
 		//  Make revert steganography
         cryptText = steg.decode(stegoObject);
 
+        //  Decrypt
 		plainText = Decrypt(cryptText);
 
 		chat.append('<div class="well"><strong>' + user + '</strong>: ' + plainText + '</div>');
@@ -164,31 +155,6 @@ $(function() {
 
 });
 
-/*
-
-
-      var img = document.getElementById("img"),
-        cover = document.getElementById("cover"),
-      
-        message = document.getElementById("message"),
-        textarea = document.getElementById("text");
-
-      if(img && textarea) {
-
-        // Decode
-        message.innerHTML = steg.decode(cover); // #IMG defautl, BUT cover
-
-        if(message.innerHTML !== "") {
-
-          message.parentNode.className="";
-          textarea.value = message.innerHTML;       
-        }
-      }
-
-
-
-
-*/
 
 
 
@@ -200,158 +166,6 @@ $(function() {
 
 
 
-
-
-/*  ------------------------------------------------ *\
-*	ENCRYPTING METHOD 
-\*  ------------------------------------------------ */
-
-function Encrypt(plainText) {
-
-	//  Array with induvidual chars, split strings in chars
-	var array    = [],
-	newArray = [];
-
-
-	//  Uppercase whole text because of matematical operation on chars
-	var uppercasePlainText = plainText.toUpperCase();
-	//  Cast string in chars array
-	array = uppercasePlainText.split("");
-	//  Array length is zero in start (logic)
-	var arraylength = 0;
-
-
-	for (var i = 0; i < array.length; i++) {
-		
-		//  Output char by char in array
-		console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
-
-		//  If there is two empty spaces in row that means that text is over
-		if((array[i-1]==' ')&&(array[i]==' ')) {
-			
-			//  Output important message
-			console.log("Enter end!");
-			//  Decrease array length because in this mode after last character first empty 
-			//  space means end of the text and that is one char more than it is needed
-			arraylength--;
-			// First empty space at the end of message, delete it
-			newArray.pop();
-
-			//  (If there is case of two empty spaces in a row) break the loop, because 
-			//  text is over
-			break;
-		}
-
-		else {
-			//  Increase array length in normal situation
-			arraylength++;
-			//  Put plan text in array for scrypt text, just in case, because than is not empty
-			newArray.push(array[i]);
-		}
-	}
-
-
-	for (var j = 0; j < arraylength; j++) {
-
-		var oldCharacter = String.fromCharCode(array[j].charCodeAt()); 
-
-		if (oldCharacter.charCodeAt() > 64) {
-
-			//  Calculate new character - KEY SHIFT
-			var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() + 13);
-
-			//  Take care about situation whene NEW character is greater than Z, it must go from A again
-			if(newCharacter.charCodeAt() > 90)
-			{
-				newCharacter = String.fromCharCode(newCharacter.charCodeAt() - 26);
-			}
-			newArray[j] = newCharacter;
-		}
-						
-		else {
-			newArray[j] = oldCharacter;
-		}
-	}
-
-
-	cryptText = newArray.toString();
-	cryptText = cryptText.replace(/,/g, "");
-
-	return cryptText;
-}
-
-
-
-/*  ------------------------------------------------ *\
-*	DECRYPTING METHOD 
-\*  ------------------------------------------------ */
-
-function Decrypt(cryptText) {
-
-	//  Array with induvidual chars, split strings in chars
-	var array    = [],
-		newArray = [];
-
-	//  Uppercase whole text because of matematical operation on chars
-	var uppercaseCryptText = cryptText.toUpperCase();
-	//  Cast string in chars array
-	array = uppercaseCryptText.split("");
-	//  Array length is zero in start (logic)
-	var arraylength = 0;
-
-	//  Go through array and check for ending
-	for (var i = 0; i < array.length; i++) {
-		//  Output char by char in array
-		console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
-
-		//console.log(array[i]);
-
-		if( (array[i-1]==' ') && (array[i]==' ') ) {
-			console.log("Enter end!");
-			arraylength--;
-			newArray.pop();
-			break;
-		}
-
-		else{
-			arraylength++;
-			newArray.push(array[i]);
-		}
-	}
-
-
-	//  Fill new array with crypted content
-	for (var j = 0; j < (arraylength); j++) {
-
-		var oldCharacter = String.fromCharCode(array[j].charCodeAt());
-		//console.log("OLD : " + oldCharacter.charCodeAt());
-
-		if (oldCharacter.charCodeAt() > 64) {
-
-			//  Calculate new character  KEY SHIFT
-			var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() - 13);
-
-			//  Take care about situation whene NEW character is greater than Z, it musto go from A again
-			if(newCharacter.charCodeAt() < 65)
-			{
-				newCharacter = String.fromCharCode(newCharacter.charCodeAt() + 26);
-			}
-			newArray[j] = newCharacter;
-		}
-
-		else {
-			newArray[j] = oldCharacter;
-		}
-
-	}
-
-	//  Make string from array for display purpose
-	var plainText = newArray.toString();
-	//  Char in array is dividede by semicolos so we need to erase semicolo
-	plainText = plainText.replace(/,/g, "");
-
-	return plainText;
-}
 
 
 
@@ -545,11 +359,10 @@ Cover.prototype.getHidingCapacity = function(image, options) {
 Cover.prototype.encode = function(message, image, options) {
 
 
-  console.log("(1) BASIC DATA");
-  console.log("Message from user : " + message);
-  console.log("Image to transfer : " + image);
-  console.log("Image src : " + image.src);
-  console.log("Options : " + options);
+  console.log("(1) ENCODE");
+  //console.log("(1) Message from user : " + message);
+  //console.log("(1) Image to transfer : " + image);
+  //console.log("(1) Image src : " + image.src);
 
 
   if(image.length) {
@@ -558,9 +371,9 @@ Cover.prototype.encode = function(message, image, options) {
   }
 
   options = options || {};
-  console.log("Options : " + options);
+  //console.log("Options : " + options);
   var config = this.config;
-  console.log("Congif : " + config);
+  //console.log("Congif : " + config);
 
   var t = options.t || config.t,
     threshold = options.threshold || config.threshold,
@@ -569,7 +382,7 @@ Cover.prototype.encode = function(message, image, options) {
     args = options.args || config.args,
     messageDelimiter = options.messageDelimiter || config.messageDelimiter;
 
-  console.log("T variable : " + t);
+  console.log("(1) T variable : " + t);
 
   if(!t || t < 1 || t > 7) throw "Error: Parameter t = " + t + " is not valid: 0 < t < 8";
 
@@ -581,9 +394,9 @@ Cover.prototype.encode = function(message, image, options) {
   //  Canvas properties
   shadowCanvas.style.display = 'none';
   shadowCanvas.width = options.width || image.width;
-  console.log("Canvas width : " + shadowCanvas.width);
+  console.log("(1) Canvas width : " + shadowCanvas.width);
   shadowCanvas.height = options.height || image.height;
-  console.log("Canvas height : " + shadowCanvas.height);
+  console.log("(1) Canvas height : " + shadowCanvas.height);
 
 
   if(options.height && options.width) {
@@ -714,22 +527,19 @@ Cover.prototype.encode = function(message, image, options) {
 Cover.prototype.decode = function(image, options) {
 
 
-  console.log("(2) BASIC DATA");
-  //console.log("Image to transfer : " + image);
-  //console.log("Image src : " + image.src);
-  //console.log("Options : " + options);
+  console.log("(2) DECODE");
+  //console.log("(2) Image to transfer : " + image);
+  //console.log("(2) Image src : " + image.src);
 
-
-  console.log("(2) Unutar decode...");
   
   if(image.length) {
     image = util.loadImg(image);
   }
 
   options = options || {};
-  console.log("(2) Options : " + options);
+  //console.log("(2) Options : " + options);
   var config = this.config;
-  console.log("(2) Config : " + config);
+  //console.log("(2) Config : " + config);
 
   
   var t = options.t || config.t,
@@ -827,12 +637,186 @@ Cover.prototype.decode = function(image, options) {
 
   if(charCode !== 0) message += String.fromCharCode(charCode & mask);
 
-  console.log("(2) HIDDEN message :" + message);
   return message;
 
 };
 return new Cover();
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  ------------------------------------------------ *\
+*	ENCRYPTING METHOD 
+\*  ------------------------------------------------ */
+
+function Encrypt(plainText) {
+
+	console.log("Plain text : " + plainText);
+
+	//  Array with induvidual chars, split strings in chars
+	var array    = [],
+	newArray = [];
+
+
+	//  Uppercase whole text because of matematical operation on chars
+	var uppercasePlainText = plainText.toUpperCase();
+	//  Cast string in chars array
+	array = uppercasePlainText.split("");
+	//  Array length is zero in start (logic)
+	var arraylength = 0;
+
+
+	for (var i = 0; i < array.length; i++) {
+		
+		//  Output char by char in array
+		console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
+
+		//  If there is two empty spaces in row that means that text is over
+		if((array[i-1]==' ')&&(array[i]==' ')) {
+			
+			//  Output important message
+			console.log("Enter end!");
+			//  Decrease array length because in this mode after last character first empty 
+			//  space means end of the text and that is one char more than it is needed
+			arraylength--;
+			// First empty space at the end of message, delete it
+			newArray.pop();
+
+			//  (If there is case of two empty spaces in a row) break the loop, because 
+			//  text is over
+			break;
+		}
+
+		else {
+			//  Increase array length in normal situation
+			arraylength++;
+			//  Put plan text in array for scrypt text, just in case, because than is not empty
+			newArray.push(array[i]);
+		}
+	}
+
+
+	for (var j = 0; j < arraylength; j++) {
+
+		var oldCharacter = String.fromCharCode(array[j].charCodeAt()); 
+
+		if (oldCharacter.charCodeAt() > 64) {
+
+			//  Calculate new character - KEY SHIFT
+			var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() + 13);
+
+			//  Take care about situation whene NEW character is greater than Z, it must go from A again
+			if(newCharacter.charCodeAt() > 90)
+			{
+				newCharacter = String.fromCharCode(newCharacter.charCodeAt() - 26);
+			}
+			newArray[j] = newCharacter;
+		}
+						
+		else {
+			newArray[j] = oldCharacter;
+		}
+	}
+
+
+	cryptText = newArray.toString();
+	cryptText = cryptText.replace(/,/g, "");
+
+	console.log("Crypt text : " + cryptText);
+
+	return cryptText;
+}
+
+
+
+/*  ------------------------------------------------ *\
+*	DECRYPTING METHOD 
+\*  ------------------------------------------------ */
+
+function Decrypt(cryptText) {
+
+	console.log("Crypt text : " + cryptText);
+
+	//  Array with induvidual chars, split strings in chars
+	var array    = [],
+		newArray = [];
+
+	//  Uppercase whole text because of matematical operation on chars
+	var uppercaseCryptText = cryptText.toUpperCase();
+	//  Cast string in chars array
+	array = uppercaseCryptText.split("");
+	//  Array length is zero in start (logic)
+	var arraylength = 0;
+
+	//  Go through array and check for ending
+	for (var i = 0; i < array.length; i++) {
+		//  Output char by char in array
+		console.log("Slovo : " + array[i] + "   ASCII :" + array[i].charCodeAt());
+
+		//console.log(array[i]);
+
+		if( (array[i-1]==' ') && (array[i]==' ') ) {
+			console.log("Enter end!");
+			arraylength--;
+			newArray.pop();
+			break;
+		}
+
+		else{
+			arraylength++;
+			newArray.push(array[i]);
+		}
+	}
+
+
+	//  Fill new array with crypted content
+	for (var j = 0; j < (arraylength); j++) {
+
+		var oldCharacter = String.fromCharCode(array[j].charCodeAt());
+		//console.log("OLD : " + oldCharacter.charCodeAt());
+
+		if (oldCharacter.charCodeAt() > 64) {
+
+			//  Calculate new character  KEY SHIFT
+			var newCharacter = String.fromCharCode(oldCharacter.charCodeAt() - 13);
+
+			//  Take care about situation whene NEW character is greater than Z, it musto go from A again
+			if(newCharacter.charCodeAt() < 65)
+			{
+				newCharacter = String.fromCharCode(newCharacter.charCodeAt() + 26);
+			}
+			newArray[j] = newCharacter;
+		}
+
+		else {
+			newArray[j] = oldCharacter;
+		}
+
+	}
+
+	//  Make string from array for display purpose
+	var plainText = newArray.toString();
+	//  Char in array is dividede by semicolos so we need to erase semicolo
+	plainText = plainText.replace(/,/g, "");
+
+	console.log("Plain text : " + plainText);
+
+	return plainText;
+}
 
 // --------------------------------------------------------------------------------------------- //
