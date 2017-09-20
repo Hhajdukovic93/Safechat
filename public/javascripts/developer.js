@@ -138,19 +138,21 @@ $(function() {
 		// Define user
 		user = data.user;
 
-		cover = document.getElementById("cover");
+		//cover = document.getElementById("cover");
 
 		// Define stegoobject
         cover.src = data.image;
+        cover.title = "Sa servera";
         stegoObject = cover.src;
 
-		//  Make revert steganography
-        cryptText = steg.decode(stegoObject);
+        setTimeout(function(){
+	        //  Make revert steganography
+	        cryptText = steg.decode(stegoObject);
+	        //  Decrypt
+			plainText = Decrypt(cryptText);
+			chat.append('<div class="well"><strong>' + user + '</strong>: ' + plainText + '</div>');
+        }, 150);
 
-        //  Decrypt
-		plainText = Decrypt(cryptText);
-
-		chat.append('<div class="well"><strong>' + user + '</strong>: ' + plainText + '</div>');
 	});
 
 });

@@ -4,6 +4,7 @@
 				width:940px;
 				padding:20px;
 				margin:auto;
+				display: none;
 			}
 			#right {
 				position:relative;
@@ -32,8 +33,9 @@
 			#messageArea {
 				width:100%;
 			}
-			#img {
+			#img, #cover {
 				width:290px;
+				height: 192px;			
 			}
 
 
