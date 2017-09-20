@@ -2,63 +2,19 @@
 *   NODE MODULS
 \*  ------------------------------------------------ */
 
-//  In-built Express modules
+//  In-built node modules
 var path = require('path');
 var http = require('http');
 var fs   = require('fs');
 
-//  ExpressJS module
-var express = require('express');
-//  Make instance of express application
-var app = express();
-
-//  Make server
-var server = http.createServer(app);
-
-//  Node module for socket communication 
-var socket_io = require('socket.io');
-var io = socket_io.listen(server);
-
-//  Node module for reading HTTP body content
+//  External Node modules
+var express    = require('express');
+var socket_io  = require('socket.io');
 var bodyParser = require('body-parser');
+var pug        = require('pug');
 
-
-//  MONGO DB User register
-//var Person = require('./Person.js');
-
-
-
-
-
-/*  ------------------------------------------------ *\
-*   MANGOOSE
-\*  ------------------------------------------------ */
-/*
-//  Require node module
-var mangoose = require('mangoose');
-
-//  Connect with MongoDB 
-mangoose.connect('mongodb://localhost:27017/SafechatDB');
-
-//  Default schema
-var Schema = mangoose.Schema;
-
-var personSchema = new Schema( {
-	name: {type: String, required: true, unique: true},
-	password: {type: String, required: true},
-	age: Number
-});
-
-
-module.exports = mangoose.model('Person', personSchema);
-
-
-/*
-personSchema.methods.standardizeName = function() {
-    this.name = this.name.toLowerCase();
-    return this.name;
-}*/
-
+//  My modules
+var Person = require('./users.js');
 
 
 
@@ -68,9 +24,36 @@ personSchema.methods.standardizeName = function() {
 *   SERVER CONFIGURATION
 \*  ------------------------------------------------ */
 
-//  JADE, EJS, Handlebars
-//app.set('view engine', 'jade');
 
+//  Make instance of express application
+var app = express();
+
+//  Make server
+var server = http.createServer(app);
+
+//  Node module for socket communication 
+var io = socket_io.listen(server);
+
+//  Server listening on port 3000
+server.listen(process.env.PORT || 3000);
+console.log('Safechat server is running on port 3000...');
+
+//  Enable using HTTP body content 
+app.use(bodyParser.urlencoded({ extended: true}));
+
+
+
+
+
+
+//  JADE, EJS, Handlebars
+
+app.set('view engine', 'ejs');
+//app.set('view options', { layout: true });
+//app.set('views', __dirname + '/views');
+
+
+//app.set('view engine', 'ejs');
 //app.set('view options', { layout: true });
 //app.set('views', __dirname + '/views');
 
@@ -87,12 +70,9 @@ app.use(express.static(path.join(__dirname, '/public')));  // Used in index.html
 //app.use('/public', express.static('files'));  //  files = public ?
 
 
-//  Enable using HTTP body content 
-app.use(bodyParser.urlencoded({ extended: true}));
 
-//  Server listening on port 3000
-server.listen(process.env.PORT || 3000);
-console.log('Safechat server is running on port 3000...');
+
+
 
 
 
@@ -104,8 +84,12 @@ console.log('Safechat server is running on port 3000...');
 
 //  Server sends to clients - index.html
 app.get('/', function(req, res) {
-	//res.type('html').status(200);
-	res.sendFile(__dirname + '/index.html');
+	res.status(200);
+	res.type('html');
+	res.sendFile(__dirname + '/public/secret.html');
+
+
+	//res.render('welcome', {name: 'Hrvoje'});
 
 	//  Inside VIEW subdirextory/folder
 	//red.render('index'); // with handlebars, pug, ejs
@@ -114,6 +98,120 @@ app.get('/', function(req, res) {
 	//  REDIRECT
 	//res.redirect('/views/pero.html');
 });
+/*
+//  Server sends to clients - index.html
+app.get('/personForm', function(req, res) {
+	res.status(200);
+	res.type('html');
+	res.sendFile(__dirname + '/public/personForm.html');
+});*/
+//  Server sends to clients - index.html
+app.get('/login', function(req, res) {
+
+	res.status(200);
+	res.type('html');
+	res.sendFile(__dirname + '/public/login.html');
+
+/*
+	var newPerson = new Person ({
+		username: req.body.username,
+		password: req.body.password,
+	});
+
+	newPerson.save( function(err) { 
+		if (err) {
+		    res.type('html').status(500);
+		    res.send('Error: ' + err);
+		}
+		else {
+		    res.render('created', {person : newPerson});
+		}
+	}); 
+
+*/
+	//res.redirect('/views/pero.html');  // TO chat
+
+
+	//  Inside VIEW subdirextory/folder
+	//red.render('index'); // with handlebars, pug, ejs
+	//  Pass arguments using JS objects
+	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
+	//  REDIRECT
+	//res.redirect('/views/pero.html');
+});
+//  Server sends to clients - index.html
+app.get('/chat', function(req, res) {
+	res.status(200);
+	res.type('html');
+	res.sendFile(__dirname + '/public/chat.html');
+
+	//  Inside VIEW subdirextory/folder
+	//red.render('index'); // with handlebars, pug, ejs
+	//  Pass arguments using JS objects
+	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
+	//  REDIRECT
+	//res.redirect('/views/pero.html');
+});
+
+//  Server sends to clients - index.html
+app.use('/create', function(req, res) {
+
+	var newPerson = new Person ({
+		username: req.body.username,
+		password: req.body.password,
+	});
+
+	newPerson.save( function(err) { 
+		if (err) {
+		    res.type('html').status(500);
+		    res.send('Error: ' + err);
+		}
+		else {
+		    res.render('created', {person : newPerson});
+		}
+	}); 
+
+});
+
+/*
+app.use('/created', function(req, res) {
+	res.type('html').status(200);
+	res.send('User created');
+});
+
+*/
+
+
+
+
+/*
+//  Server sends to clients - index.html
+app.get('/secret', function(req, res) {
+	res.status(200);
+	res.type('html');
+	res.sendFile(__dirname + '/index.html');
+
+	//res.redirect('/views/pero.html');  // TO login/registration
+
+
+
+	//  Inside VIEW subdirextory/folder
+	//red.render('index'); // with handlebars, pug, ejs
+	//  Pass arguments using JS objects
+	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
+	//  REDIRECT
+	//res.redirect('/views/pero.html');
+});
+*/
+
+
+
+//  Server sends to clients - index.html
+//app.get('/*default*/', function(req, res) {
+//	res.status(404);
+//	res.send('Not found');
+	//res.sendFile(__dirname + '/404.html');
+//});
 
 /*
 //  Send JS script to client

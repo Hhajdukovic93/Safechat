@@ -16,7 +16,7 @@ body {
 		}
 
 		#userArea, #messageArea  {
-			display: none;
+			//display: none;
 		}
 
 		#main {

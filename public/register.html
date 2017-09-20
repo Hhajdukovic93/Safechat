@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>Safechat</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css"> 
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+		<script type="text/javascript" src="javascripts/safechat.js"></script> 
+	</head>
+
+	<body>
+		<div class="container-fluid">	
+
+Register.html <br><br>
+
+			<div class="row">
+				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
+					<form action="/create" method="POST">
+
+						<div class="form-group">
+							<label> Insert Username : </label>
+							<input name="username" class="form-control" id="username"></input>
+							<br/>
+							<label> Insert Password : </label>
+							<input name="password" class="form-control" id="password"></input>
+							<br/>
+							<input type="submit" class="btn btn-primaty" value="Submit">
+						</div>
+
+					</form>
+				</div>
+			</div> 
+
+<a href="/registered.html">Register me!!!</a>
+					
+		</div> <!-- / of container fluid -->
+	</body>
+</html>

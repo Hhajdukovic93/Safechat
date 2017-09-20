@@ -42,17 +42,18 @@ $(function() {
 		console.log(userSecretKeyInput);
 
 		if (userSecretKeyInput == 'enigma') {
-			cipherArea.hide();
-			userArea.show();
+			//cipherArea.hide();
+			//userArea.show();
 			console.log("Succed with cipher key");
 		} 
 		else {
 			console.log("Failed with cipher key");
+      //  Make username input form empty again
+      cipher.val('');
+      event.preventDefault();
+      return false;
 		}
-
-		//  Make username input form empty again
-		cipher.val('');
-		event.preventDefault();
+		
 	});
 
 
@@ -68,16 +69,11 @@ $(function() {
 		console.log('User : ' + username.val() + ' logged in chat');
 		//  Send new user data to server
 		socket.emit('new user', username.val(), function(data){
-			//  Proceed from login screen to chat screen
-			if(data) {
-				userArea.hide();
-				messageArea.show();
-			}
+
 		});
+    
 		//  Make username input form empty again
 		username.val('');
-		event.preventDefault();
-
 
 		//  TO DO : interact with MongoDB
 	});
