@@ -69,7 +69,7 @@ $(function() {
 		console.log('User : ' + username.val() + ' logged in chat');
 		//  Send new user data to server
 		socket.emit('new user', username.val(), function(data){
-
+      
 		});
     
 		//  Make username input form empty again

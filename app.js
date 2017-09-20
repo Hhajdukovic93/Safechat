@@ -14,7 +14,7 @@ var bodyParser = require('body-parser');
 var pug        = require('pug');
 
 //  My modules
-var Person = require('./users.js');
+var Person = require('./models/users.js');
 
 
 
@@ -74,7 +74,10 @@ app.use(express.static(path.join(__dirname, '/public')));  // Used in index.html
 
 
 
-
+//  Array for users
+var users = [];
+//  Array for connections
+var connections = [];
 
 
 
@@ -86,74 +89,17 @@ app.use(express.static(path.join(__dirname, '/public')));  // Used in index.html
 app.get('/', function(req, res) {
 	res.status(200);
 	res.type('html');
-	res.sendFile(__dirname + '/public/secret.html');
-
-
-	//res.render('welcome', {name: 'Hrvoje'});
-
-	//  Inside VIEW subdirextory/folder
-	//red.render('index'); // with handlebars, pug, ejs
-	//  Pass arguments using JS objects
-	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
-	//  REDIRECT
-	//res.redirect('/views/pero.html');
+	res.sendFile(__dirname + '/public/cipher.html');
 });
-/*
-//  Server sends to clients - index.html
-app.get('/personForm', function(req, res) {
-	res.status(200);
-	res.type('html');
-	res.sendFile(__dirname + '/public/personForm.html');
-});*/
-//  Server sends to clients - index.html
+//  Route to login (2) after cipher (1) 
 app.get('/login', function(req, res) {
-
 	res.status(200);
 	res.type('html');
 	res.sendFile(__dirname + '/public/login.html');
-
-/*
-	var newPerson = new Person ({
-		username: req.body.username,
-		password: req.body.password,
-	});
-
-	newPerson.save( function(err) { 
-		if (err) {
-		    res.type('html').status(500);
-		    res.send('Error: ' + err);
-		}
-		else {
-		    res.render('created', {person : newPerson});
-		}
-	}); 
-
-*/
-	//res.redirect('/views/pero.html');  // TO chat
-
-
-	//  Inside VIEW subdirextory/folder
-	//red.render('index'); // with handlebars, pug, ejs
-	//  Pass arguments using JS objects
-	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
-	//  REDIRECT
-	//res.redirect('/views/pero.html');
-});
-//  Server sends to clients - index.html
-app.get('/chat', function(req, res) {
-	res.status(200);
-	res.type('html');
-	res.sendFile(__dirname + '/public/chat.html');
-
-	//  Inside VIEW subdirextory/folder
-	//red.render('index'); // with handlebars, pug, ejs
-	//  Pass arguments using JS objects
-	//res.render('home', {title: 'Pero'});  // with handlebars, pug, ejs
-	//  REDIRECT
-	//res.redirect('/views/pero.html');
 });
 
-//  Server sends to clients - index.html
+
+//  Create user in database
 app.use('/create', function(req, res) {
 
 	var newPerson = new Person ({
@@ -173,28 +119,79 @@ app.use('/create', function(req, res) {
 
 });
 
-/*
-app.use('/created', function(req, res) {
-	res.type('html').status(200);
-	res.send('User created');
+//  Route to chat (3) after login (2) 
+app.post('/loginIn', function(req, res) {
+	
+	var query = {};
+
+	var username = req.body.username;
+	console.log(username);
+	var password = req.body.password;
+	console.log(password);
+
+	query.username = username;
+	query.password = password;
+
+	console.log(query);
+
+	var allUsers = [];
+
+	Person.find( query,  function(err, result) {
+		console.log("RESULT : ");
+		console.log(result);
+
+		//var pero = result.map(function(a) {return a.username;});
+
+
+		if(err) {
+			res.type('html').status(500);
+			res.send('Error : ' + err);
+		}
+		else {
+
+			if(result.length == 0 ) {
+				res.send("Fails");
+				
+			}
+			else {
+				allUsers.push(username);
+				console.log("New user in chat : " + username);
+				console.log("All users : " + allUsers);
+				res.render('chat',  { users: allUsers});
+			}
+		}
+	});
 });
 
-*/
+//  Show all from database
+app.use('/all', function(req, res) {  // use for chat user list
+
+	Person.find( function(err, allPeople) {
+		if(err) {
+			res.type('html').status(500);
+			res.send('Error : ' + err);
+		}
+		else if(allPeople.length == 0) {
+			res.type('html').status(300);
+			res.send('There are no people');
+		}
+		else {
+			res.render('showAll', { people: allPeople });			
+		}
+	});
+});
+
 
 
 
 
 /*
 //  Server sends to clients - index.html
-app.get('/secret', function(req, res) {
+app.get('/', function(req, res) {
 	res.status(200);
 	res.type('html');
 	res.sendFile(__dirname + '/index.html');
-
 	//res.redirect('/views/pero.html');  // TO login/registration
-
-
-
 	//  Inside VIEW subdirextory/folder
 	//red.render('index'); // with handlebars, pug, ejs
 	//  Pass arguments using JS objects
@@ -214,51 +211,8 @@ app.get('/secret', function(req, res) {
 //});
 
 /*
-//  Send JS script to client
-app.get('/public/javascripts/steganography.js', function(req,res) {
-	res.sendFile(__dirname + '/public/javascripts/steganography.js');
+; 
 });
-app.use('/login', function(req, res) {
-	res.type('html').status(200);
-	res.sendFile(__dirname + '/login.html');
-});
-app.use('/chat', function(req, res) {
-	res.type('html').status(200);
-	res.sendFile(__dirname + '/chat.html');
-});
-
-//  ROUTE FOR CREATING USERS
-app.use('/create', function(req, res) {
-	var newPerson = new Person ({
-		name: req.body.name,
-		age: req.body.age,
-	});
-
-	newPerson.save( function(err) { 
-		if (err) {
-		    res.type('html').status(500);
-		    res.send('Error: ' + err);
-		}
-		else {
-		    res.render('created', {person : newPerson});
-		}
-	}); 
-});
-
-app.use('/created', function(req, res) {
-	res.type('html').status(200);
-	res.send('User created');
-});
-
-//  All kind of handle form !!!
-app.use('/handleForm', function(req, res) {
-	res.sendFile(__dirname + '/index.html');
-	red.render('index');
-	res.render('home');  // with handlebars
-
-	res.send("Form is handled...");
-});
-*/
 
 
 
@@ -268,10 +222,6 @@ app.use('/handleForm', function(req, res) {
 *   SOCKET COMMUNICATION
 \*  ------------------------------------------------ */
 
-//  Array for users
-users = [];
-//  Array for connections
-connections = [];
 
 io.on('connection', function(socket) {
 
@@ -294,6 +244,7 @@ io.on('connection', function(socket) {
 	//  Emit new user list using array "users" to clients
 	function updateUsernames() {
 		io.emit('get users', users)
+		console.log("Show me users : " + users);
 	}
 
 	//  Messages

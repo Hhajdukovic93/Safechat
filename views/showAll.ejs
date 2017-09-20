@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+	Svi ljudi :
+
+	<ul>
+	<% people.forEach( (person) => { %>
+		<li>
+			<%= person.username %>
+			<%= person.password %>
+		</li>
+	<% }); %>
+	</ul>
+	<br><a href="/login.html"></a>
+	
+
+</body>
+
+</html>
+
