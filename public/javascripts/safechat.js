@@ -275,7 +275,7 @@ $(function() {
       args = options.args || config.args,
       messageDelimiter = options.messageDelimiter || config.messageDelimiter;
 
-    console.log("(1) T variable : " + t);
+    //console.log("(1) T variable : " + t);
 
     if(!t || t < 1 || t > 7) throw "Error: Parameter t = " + t + " is not valid: 0 < t < 8";
 
@@ -287,9 +287,9 @@ $(function() {
     //  Canvas properties
     shadowCanvas.style.display = 'none';
     shadowCanvas.width = options.width || image.width;
-    console.log("(1) Canvas width : " + shadowCanvas.width);
+    //console.log("(1) Canvas width : " + shadowCanvas.width);
     shadowCanvas.height = options.height || image.height;
-    console.log("(1) Canvas height : " + shadowCanvas.height);
+    //console.log("(1) Canvas height : " + shadowCanvas.height);
 
     if(options.height && options.width) {
       shadowCtx.drawImage(image, 0, 0, options.width, options.height );
@@ -408,7 +408,7 @@ $(function() {
       args = options.args || config.args, 
       messageCompleted = options.messageCompleted || config.messageCompleted;
 
-    console.log("(2) T : " + t);
+    //console.log("(2) T : " + t);
 
     if(!t || t < 1 || t > 7) throw "Error: Parameter t = " + t + " is not valid: 0 < t < 8";
       
@@ -417,9 +417,9 @@ $(function() {
 
     shadowCanvas.style.display = 'none';
     shadowCanvas.width = options.width || image.width;
-    console.log("(2) Canvas width : " + shadowCanvas.width);
+    //console.log("(2) Canvas width : " + shadowCanvas.width);
     shadowCanvas.height = options.width || image.height;
-    console.log("(2) Canvas height : " + shadowCanvas.height);
+    //console.log("(2) Canvas height : " + shadowCanvas.height);
 
 
     if(options.height && options.width) {
