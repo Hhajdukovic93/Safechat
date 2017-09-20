@@ -15,27 +15,32 @@ body {
 			align-items: center;
 		}
 
-		#userArea {
-			display: none;
-		}
-
-		#messageArea {
+		#userArea, #messageArea  {
 			display: none;
 		}
 
 		#main {
-			
+			position:relative;
+			width:940px;
+			padding:20px;
+			margin:auto;
+			display: none;
 		}
+					
+			#right {
+				position:relative;
+				float:left;
+				margin: 10px;
+				width:600px;
+				vertical-align:top;
+			}
+
+				#img, #cover {
+					width:290px;
+					height: 192px;			
+				}
+
+a { color: #00B7FF;}
 
 
 
-
-a {
-  color: #00B7FF;
-}
-
-.hiddenImage {
-	display: none;
-	//width: 100px;
-	//height: 100px;
-}
