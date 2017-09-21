@@ -15,19 +15,28 @@
 
 	<body>
 		<div class="container-fluid">	
+
+			<!-- Enter secret name -->
+			<div id="agentArea" class="row">
+				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
+					<form id="agentForm">
+						<div class="form-group">
+							<label> Enter Agent name : </label>
+							<input class="form-control" id="agentName"></input>
+							<br/>
+							<input type="submit" class="btn btn-primaty" value="Enter">
+						</div>
+					</form>
+				</div>
+			</div> 
 			
+			<!-- Send messages -->
 			<div id="messageArea" class="row">
 				<div class="col-sm-4">
 					<div class="well">
-						<h3>Online Users</h3>						
-						<ul class ="list-group" id="users">
-						    <% for (var i = 0; i < users.length; i++) { %>
-							    <li >						     
-							         <%= users[i] %>						           						
-							    </li>
-						    <% } %>
-						</ul>
-					</div>					
+						<h3>Online Agents</h3>
+						<ul class ="list-group" id="agents"></ul>
+					</div>
 				</div>
 				<div class="col-sm-8">
 					<div class="chat" id="chat"></div>
@@ -40,7 +49,8 @@
 						</div>
 					</form>
 				</div>
-
+			
+				<!-- Insivible part for steganography -->
 				<div id="main">
 					<div id="right">
 						<!-- SHOW IMGAGE -->

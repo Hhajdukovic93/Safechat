@@ -74,13 +74,6 @@ app.use(express.static(path.join(__dirname, '/public')));  // Used in index.html
 
 
 
-//  Array for users
-var users = [];
-//  Array for connections
-var connections = [];
-
-
-
 /*  ------------------------------------------------ *\
 *   ROUTES
 \*  ------------------------------------------------ */
@@ -120,18 +113,15 @@ app.use('/create', function(req, res) {
 });
 
 //  Route to chat (3) after login (2) 
-app.post('/loginIn', function(req, res) {
+app.post('/chat', function(req, res) {
 	
 	var query = {};
 	var allUsers = [];
 
 	var username = req.body.username;
 	var password = req.body.password;
-
 	query.username = username;
 	query.password = password;
-
-	
 
 	Person.find( query,  function(err, result) {
 
@@ -140,22 +130,11 @@ app.post('/loginIn', function(req, res) {
 			res.send('Error : ' + err);
 		}
 		else {
-
-
-
 			if(result.length == 0 ) {
-				res.send("Fails");
-				
+				res.send("Fails");				
 			}
 			else {
-
-				allUsers.push(username);
-				
-				console.log("New user in chat : " + username);
-				console.log("All users : " + allUsers);
-
-
-				res.render('chat',  { users: allUsers});
+				res.render('chat');
 			}
 		}
 	});
@@ -221,6 +200,12 @@ app.get('/', function(req, res) {
 \*  ------------------------------------------------ */
 
 
+//  Array for users
+var agents = [];
+//  Array for connections
+var connections = [];
+
+
 io.on('connection', function(socket) {
 
 	// After every new connection, increase/push connection array with new one
@@ -229,20 +214,22 @@ io.on('connection', function(socket) {
 	console.log('Connected: %s sockets connected', connections.length);
 
 	//  Users
-	socket.on('new user', function(data, callback) { 
+	socket.on('new agent', function(data, callback) { 
+
+		console.log("Na server prijavljen : " + data);
+
 		callback(true);
 		//  Get username from method, preciselly from method data
 		socket.username = data;
 		//  Put new user in users array
-		users.push(socket.username);
+		agents.push(socket.username);
 		//  AFter every change redisplay user list ( ADD )
 		updateUsernames();
 	});
 
 	//  Emit new user list using array "users" to clients
 	function updateUsernames() {
-		io.emit('get users', users)
-		console.log("Show me users : " + users);
+		io.emit('get users', agents)
 	}
 
 	//  Messages
@@ -257,14 +244,14 @@ io.on('connection', function(socket) {
 	// Disconnecting 
 	socket.on('disconnect', function(data){
 		//  Delete username from user list after disconnected
-		users.splice(users.indexOf(socket.username), 1);
+		agents.splice(agents.indexOf(socket.username), 1);
 		//  Display diconnected user
-		console.log('Disconnected user: %s', socket.username);
+		//console.log('Disconnected user: %s', socket.username);
 		//  Update username list after change  ( DELETE )
 		updateUsernames();
 		// After disconnection, decrease/pop connection array by one
 		connections.splice(connections.indexOf(socket), 1);
 		// Again, display number of current sockets/connections
-		console.log('Disconnected: %s sockets connected', connections.length);
+		//console.log('Disconnected: %s sockets connected', connections.length);
 	});
 });

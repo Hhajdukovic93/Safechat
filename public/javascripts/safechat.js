@@ -4,23 +4,26 @@ $(function() {
 	var socket = io.connect();
 
 	//  Areas
-	var cipherArea = $('#cipherArea'),
-	    userArea = $('#userArea'),
+	var cipherArea  = $('#cipherArea'),
+	    //userArea    = $('#userArea'),
+      agentArea   = $('#agentArea'),
 	    messageArea = $('#messageArea');
 
 	//  Forms
-	var cipherForm = $('#cipherForm'),	
-	    userForm = $('#userForm'),
+	var cipherForm  = $('#cipherForm'),	
+	    //userForm    = $('#userForm'),
+      agentForm   = $('#agentForm'),
 	    messageForm = $('#messageForm');
 
 	//  Inputs
-	var cipher = $('#cipher'),
-	    username = $('#username'),
-	    message = $('#message');
+	var cipher     = $('#cipher'),
+	    //username   = $('#username'),
+      agentName  = $('#agentName'),
+	    message    = $('#message');
 
 	//  Text areas
-	var chat = $('#chat'),
-	    users = $('#users');
+	var chat  = $('#chat'),
+	    agents = $('#agents');
 
 	//  Cryptography strings
 	var plainText,
@@ -59,23 +62,26 @@ $(function() {
 
 
 	/*  ------------------------------------------------ *\
-	*   (2) USERS
+	*   (2) AGENTS
 	\*  ------------------------------------------------ */
 
 	//  Method for user login
-	userForm.submit(function(event) {
+	agentForm.submit(function(event) {
 
 		// Display message in console after new user is online
-		console.log('User : ' + username.val() + ' logged in chat');
+		console.log('Agent : ' + agentName.val() + ' logged in chat');
+    
 		//  Send new user data to server
-		socket.emit('new user', username.val(), function(data){
-      
+		socket.emit('new agent', agentName.val(), function(data){
+      if (data) {
+        agentArea.hide();
+        messageArea.show();
+      }
 		});
     
 		//  Make username input form empty again
-		username.val('');
-
-		//  TO DO : interact with MongoDB
+		agentName.val('');
+    event.preventDefault();
 	});
 
 	//  List of active user - add to user list in chat app
@@ -88,7 +94,7 @@ $(function() {
 			userList += '<li class="list-group-item">' + data[i] + '</li>'
 		}
 		//  Write userList unorder list to userlist in chat app
-		users.html(userList);
+		agents.html(userList);
 	});
 
 

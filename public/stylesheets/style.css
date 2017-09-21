@@ -15,9 +15,13 @@ body {
 			align-items: center;
 		}
 
-		#userArea, #messageArea  {
-			//display: none;
+		#agentArea {}
+
+		#messageArea  {
+			display: none;
 		}
+
+
 
 		#main {
 			position:relative;
