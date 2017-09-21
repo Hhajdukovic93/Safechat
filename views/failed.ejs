@@ -16,29 +16,16 @@
 	<body>
 		<div class="container-fluid">
 			<div class="wrapper">	
-				<div class="row">
-					<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
-						<p>All registered users</p>
-						<ul>
-						<% people.forEach( (person) => { %>
-							<li class="item">
-								<%= person.username %>
-								<%= person.password %>
-							</li>
-						<% }); %>
-						</ul>
-						<div class="link">
-							<a href="/login.html">Back to login</a>
-						</div>
+				<div class="row [ col-sm-12 col-md-6 offset-md-3 ]">
+					<p class="paragraph">Incorrect username or password</p>
+					<div class="link">
+						<a href="/login.html">Back to login</a>
 					</div>
 				</div> 
 			</div>
-		</div> <!-- / of container fluid -->
+		</div> 
 	</body>
 </html>
-
-
-
 
 
 

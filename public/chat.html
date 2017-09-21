@@ -15,42 +15,31 @@
 
 	<body>
 		<div class="container-fluid">	
-<!-- 
-			<div id="cipherArea" class="row">
-				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
-					<form id="cipherForm">
+			<!-- Enter secret name -->
+			<div class="wrapper" id="chatWrapper">
+				<div id="agentArea" class="[ col-sm-12 col-md-6 offset-md-3 ]">
+					<form id="agentForm">
 						<div class="form-group">
-							<label> Enter Secret Key : </label>
-							<input class="form-control" id="cipher"></input>
-							<br/>
-							<input type="submit" class="btn btn-primaty" value="Enter">
+							<label> Agent : </label>
+							<input class="form-control" id="agentName"></input>
+							<br/>						
+							<div class="button-wrapper">
+								<input type="submit" class="btn btn-primaty" value="Enter">
+							</div>
 						</div>
 					</form>
-				</div>
-			</div> 
- -->
-			<div id="userArea" class="row">
-				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
-					<form id="userForm">
-						<div class="form-group">
-							<label> Enter Username : </label>
-							<input class="form-control" id="username"></input>
-							<br/>
-							<input type="submit" class="btn btn-primaty" value="Login">
-						</div>
-					</form>
-				</div>
-			</div> 
-			
+				</div> 
+			</div>
+			<!-- Send messages -->
 			<div id="messageArea" class="row">
 				<div class="col-sm-4">
-					<div class="well">
-						<h3>Online Users</h3>
-						<ul class ="list-group" id="users"></ul>
+					<div class="well content">
+						<h3 class="subtitle">Online Agents</h3>
+						<ul class ="list-group" id="agents"></ul>
 					</div>
 				</div>
 				<div class="col-sm-8">
-					<div class="chat" id="chat"></div>
+					<div class="chat content" id="chat"></div>
 					<form id="messageForm">
 						<div class="form-group">
 							<label> Enter Message : </label>
@@ -60,16 +49,13 @@
 						</div>
 					</form>
 				</div>
-
+				<!-- Insivible part for steganography -->
 				<div id="main">
 					<div id="right">
-						<!-- SHOW IMGAGE -->
 						<div id="original" class="half">
 							<h2>Plain Image:</h2>
-							<!-- DEFAULT IMAGE -->
 							<img id="img" src="/images/test.jpg"/>
 						</div>
-						<!-- SHOW STEGO IMAGE -->
 						<div id="stego" class="half">
 							<h2>Encoded Image:</h2>
 							<img id="cover" src=""/>
@@ -77,7 +63,7 @@
 					</div>
 				</div> 
 			</div>
-
-		</div> <!-- / of container fluid -->
+		</div>
 	</body>
+	
 </html>
