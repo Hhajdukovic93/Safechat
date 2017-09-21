@@ -21,6 +21,11 @@
 					<div class="well">
 						<h3>Online Users</h3>						
 						<ul class ="list-group" id="users">
+						    <% for (var i = 0; i < users.length; i++) { %>
+							    <li >						     
+							         <%= users[i] %>						           						
+							    </li>
+						    <% } %>
 						</ul>
 					</div>					
 				</div>

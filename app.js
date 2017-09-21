@@ -123,25 +123,17 @@ app.use('/create', function(req, res) {
 app.post('/loginIn', function(req, res) {
 	
 	var query = {};
+	var allUsers = [];
 
 	var username = req.body.username;
-	console.log(username);
 	var password = req.body.password;
-	console.log(password);
 
 	query.username = username;
 	query.password = password;
 
-	console.log(query);
-
-	var allUsers = [];
+	
 
 	Person.find( query,  function(err, result) {
-		console.log("RESULT : ");
-		console.log(result);
-
-		//var pero = result.map(function(a) {return a.username;});
-
 
 		if(err) {
 			res.type('html').status(500);
@@ -149,14 +141,20 @@ app.post('/loginIn', function(req, res) {
 		}
 		else {
 
+
+
 			if(result.length == 0 ) {
 				res.send("Fails");
 				
 			}
 			else {
+
 				allUsers.push(username);
+				
 				console.log("New user in chat : " + username);
 				console.log("All users : " + allUsers);
+
+
 				res.render('chat',  { users: allUsers});
 			}
 		}
