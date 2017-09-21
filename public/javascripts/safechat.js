@@ -85,7 +85,13 @@ $(function() {
 	});
 
 	//  List of active user - add to user list in chat app
-	socket.on('get users', function(data) {
+	socket.on('get agents', function(data) {
+
+    console.log("Primio na client strnai agente");
+
+    for(i = 0; i < data.length; i++) {
+      console.log("(C)Agents : " + data[i]); 
+    }
 					
 		//  Array for all user/clients active on chat
 		var userList = '';

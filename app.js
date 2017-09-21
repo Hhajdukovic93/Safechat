@@ -116,7 +116,6 @@ app.use('/create', function(req, res) {
 app.post('/chat', function(req, res) {
 	
 	var query = {};
-	var allUsers = [];
 
 	var username = req.body.username;
 	var password = req.body.password;
@@ -134,7 +133,7 @@ app.post('/chat', function(req, res) {
 				res.send("Fails");				
 			}
 			else {
-				res.render('chat');
+				res.sendFile(__dirname + '/chat.html');
 			}
 		}
 	});
@@ -199,7 +198,6 @@ app.get('/', function(req, res) {
 *   SOCKET COMMUNICATION
 \*  ------------------------------------------------ */
 
-
 //  Array for users
 var agents = [];
 //  Array for connections
@@ -207,6 +205,7 @@ var connections = [];
 
 
 io.on('connection', function(socket) {
+
 
 	// After every new connection, increase/push connection array with new one
 	connections.push(socket);
@@ -223,13 +222,20 @@ io.on('connection', function(socket) {
 		socket.username = data;
 		//  Put new user in users array
 		agents.push(socket.username);
+		console.log("Agents online : " + agents.length); 
+
+
+		for(i = 0; i < agents.length; i++) {
+			console.log("Agents () : " + agents[i]); 
+		}
+
 		//  AFter every change redisplay user list ( ADD )
 		updateUsernames();
 	});
 
 	//  Emit new user list using array "users" to clients
 	function updateUsernames() {
-		io.emit('get users', agents)
+		io.emit('get agents', agents)
 	}
 
 	//  Messages
@@ -243,15 +249,20 @@ io.on('connection', function(socket) {
 
 	// Disconnecting 
 	socket.on('disconnect', function(data){
-		//  Delete username from user list after disconnected
-		agents.splice(agents.indexOf(socket.username), 1);
-		//  Display diconnected user
-		//console.log('Disconnected user: %s', socket.username);
-		//  Update username list after change  ( DELETE )
-		updateUsernames();
+
 		// After disconnection, decrease/pop connection array by one
 		connections.splice(connections.indexOf(socket), 1);
 		// Again, display number of current sockets/connections
-		//console.log('Disconnected: %s sockets connected', connections.length);
+		console.log('Disconnected: %s sockets connected', connections.length);
+
+		if ((agents.length) ==  (connections.length + 1)) {
+
+			//Delete username from user list after disconnected
+			agents.splice(agents.indexOf(socket.username), 1); 
+		    //Display diconnected user
+			console.log('Disconnected user: %s', socket.username);
+		    //Update username list after change  ( DELETE )
+			updateUsernames();
+		}
 	});
 });
