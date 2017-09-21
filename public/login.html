@@ -15,28 +15,30 @@
 
 	<body>
 		<div class="container-fluid">	
+			<div class="wrapper">
+				<div id="userArea" class="row [ col-sm-12 col-md-6 offset-md-3 ]">
 
-Login.html
-			<div id="userArea" class="row">
-				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
-
-					<form action="/chat" method="POST">
-						<div class="form-group">
-							<label> Username : </label>
-							<input name="username" class="form-control" id="username"></input>
-							<br/>
-							<label> Password : </label>
-							<input name="password" class="form-control" id="password"></input>
-							<br/>
-							<input type="submit" class="btn btn-primaty" value="Login">
+						<form action="/chat" method="POST">
+							<div class="form-group">
+								<label> Username : </label>
+								<input name="username" class="form-control" id="username"></input>
+								<br/>
+								<label> Password : </label>
+								<input name="password" class="form-control" id="password"></input>
+								<br/>
+								<div class="button-wrapper">
+									<input type="submit" class="btn btn-primaty" value="Login">
+								</div>
+								
+							</div>
+						</form>
+						<div class="link">
+							<a href="/register.html">Register</a>
 						</div>
-					</form>
 
-				</div>
-			</div> 
-
-		<a href="/register.html">Register</a>
-					
+				</div> 
+			</div>				
 		</div> <!-- / of container fluid -->
 	</body>
+
 </html>

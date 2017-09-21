@@ -84,6 +84,7 @@ app.get('/', function(req, res) {
 	res.type('html');
 	res.sendFile(__dirname + '/public/cipher.html');
 });
+
 //  Route to login (2) after cipher (1) 
 app.get('/login', function(req, res) {
 	res.status(200);
@@ -93,7 +94,7 @@ app.get('/login', function(req, res) {
 
 
 //  Create user in database
-app.use('/create', function(req, res) {
+app.use('/registered', function(req, res) {
 
 	var newPerson = new Person ({
 		username: req.body.username,
@@ -106,7 +107,7 @@ app.use('/create', function(req, res) {
 		    res.send('Error: ' + err);
 		}
 		else {
-		    res.render('created', {person : newPerson});
+		    res.render('registered', {person : newPerson});
 		}
 	}); 
 

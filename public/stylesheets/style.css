@@ -1,50 +1,63 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #CDE;
+  background-color: #8E44AD;
+  color: #FFFFFF;
   margin-top: 50px;
 }
-
 	.container-fluid {
 		min-height: 90vh;
 	}
-	
-		#cipherArea {
+		.wrapper {
 			height: 90vh;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
 
-		#agentArea {}
-
-		#messageArea  {
+		#messageArea, #main  {
 			display: none;
 		}
 
-
-
-		#main {
-			position:relative;
-			width:940px;
-			padding:20px;
-			margin:auto;
-			display: none;
-		}
-					
-			#right {
-				position:relative;
-				float:left;
-				margin: 10px;
-				width:600px;
-				vertical-align:top;
+			#img, #cover {
+				width:  900px;
+				height: 596px;			
 			}
 
-				#img, #cover {
-					width:  900px;
-					height: 596px;			
-				}
+.paragraph {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
-a { color: #00B7FF;}
+.button-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
+.btn, .color {
+	background-color: #FFF;
+	color: #8E44AD;
+}
 
+.item {
+	list-style-type: none;
+}
 
+.link {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 50px;
+}
+	a { 
+		color: #FFF;
+	}
+	a:hover {
+		color: #DED;
+		text-decoration: none;
+	}
+
+.subtitle {
+	font-size: 1.4em;
+}

@@ -14,30 +14,28 @@
 	</head>
 
 	<body>
-		<div class="container-fluid">	
-
-Register.html <br><br>
-
-			<div class="row">
-				<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
-
-					<form action="/create" method="POST">
-						<div class="form-group">
-							<label> Insert Username : </label>
-							<input name="username" class="form-control" id="username"></input>
-							<br/>
-							<label> Insert Password : </label>
-							<input name="password" class="form-control" id="password"></input>
-							<br/>
-							<input type="submit" class="btn btn-primaty" value="Submit">
+		<div class="container-fluid">
+			<div class="wrapper">	
+				<div class="row [ col-sm-12 col-md-6 offset-md-3 ]">
+						<form action="/registered" method="POST">
+							<div class="form-group">
+								<label> Input username : </label>
+								<input name="username" class="form-control" id="username"></input>
+								<br/>
+								<label> Input password : </label>
+								<input name="password" class="form-control" id="password"></input>
+								<br/>
+								
+								<div class="button-wrapper">
+									<input type="submit" class="btn btn-primaty" value="Register">
+								</div>
+							</div>
+						</form>
+						<div class="link">
+							<a href="/login.html">Back to login</a>
 						</div>
-					</form>
-
-				</div>
-			</div> 
-
-<a href="/login.html">Back to login</a>
-					
+				</div> 
+			</div>
 		</div> <!-- / of container fluid -->
 	</body>
 </html>

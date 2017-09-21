@@ -14,22 +14,18 @@
 	</head>
 
 	<body>
-		<div class="container-fluid">	
-			<div class="wrapper">
-				<div id="cipherArea" class="row [ col-sm-12 col-md-6 offset-md-3 ]">
-						<form id="cipherForm" action="login.html" method="GET">
-							<div class="form-group">
-								<label> Secret Key : </label>
-								<input class="form-control" id="cipher"></input>
-								<br/>
-								<div class="button-wrapper">
-									<input type="submit" class="btn btn-primaty" value="Enter">
-								</div>
-							</div>
-						</form>					
+		<div class="container-fluid">
+			<div class="wrapper">	
+				<div class="row [ col-sm-12 col-md-6 offset-md-3 ]">
+						<p class="paragraph">User &nbsp;:&nbsp;<b><%= person.username %></b>&nbsp; is registered and ready for login</p>
+						<div class="link">
+							<a href="/login.html">Back to login</a>
+						</div>
 				</div> 
 			</div>
-		</div>
+		</div> <!-- / of container fluid -->
 	</body>
-
 </html>
+
+
+

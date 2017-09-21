@@ -1,21 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<body>
-	Svi ljudi :
+	<head>
+		<title>Safechat</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css"> 
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> 
+		<script type="text/javascript" src="javascripts/safechat.js"></script> 
+	</head>
 
-	<ul>
-	<% people.forEach( (person) => { %>
-		<li>
-			<%= person.username %>
-			<%= person.password %>
-		</li>
-	<% }); %>
-	</ul>
-	<br><a href="/login.html"></a>
-	
-
-</body>
-
+	<body>
+		<div class="container-fluid">
+			<div class="wrapper">	
+				<div class="row">
+					<div class="[ col-sm-12 col-md-6 offset-md-3 ]">
+						<p>All registered users</p>
+						<ul>
+						<% people.forEach( (person) => { %>
+							<li class="item">
+								<%= person.username %>
+								<%= person.password %>
+							</li>
+						<% }); %>
+						</ul>
+						<div class="link">
+							<a href="/login.html">Back to login</a>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div> <!-- / of container fluid -->
+	</body>
 </html>
+
+
+
+
+
 

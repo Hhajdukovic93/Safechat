@@ -7,6 +7,8 @@ $(function() {
 	var cipherArea  = $('#cipherArea'),
 	    //userArea    = $('#userArea'),
       agentArea   = $('#agentArea'),
+      chatWrapper   = $('#chatWrapper'),
+
 	    messageArea = $('#messageArea');
 
 	//  Forms
@@ -28,6 +30,8 @@ $(function() {
 	//  Cryptography strings
 	var plainText,
 		  cryptText;
+
+      
 
 
 
@@ -75,6 +79,7 @@ $(function() {
 		socket.emit('new agent', agentName.val(), function(data){
       if (data) {
         agentArea.hide();
+        chatWrapper.hide(),
         messageArea.show();
       }
 		});
