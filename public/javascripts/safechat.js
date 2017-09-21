@@ -97,6 +97,8 @@ $(function() {
 
 	// Get new message and display it in chat window by adding new DIV
 	socket.on('new message', function(data) {
+    // Add scroll to chat box
+    $('#chat').addClass('overflowing');
 		// Define user
 		user = data.user;
 		// Define stegoobject
@@ -108,7 +110,7 @@ $(function() {
 	        cryptText = steg.decode(stegoObject);
 	        //  Decrypt
 			    plainText = Decrypt(cryptText);
-			    chat.append('<div class="well"><strong>' + user + '</strong>: ' + plainText + '</div>');      
+			    chat.prepend('<div class="well"><strong>' + user + '</strong>: ' + plainText + '</div>');      
         }, 100);
 	});
 });

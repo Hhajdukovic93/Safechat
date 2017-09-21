@@ -18,6 +18,12 @@ body {
 			display: none;
 		}
 
+		.overflowing {
+			max-height: 220px;
+			overflow-x: hidden; 
+			overflow-y: scroll;
+		}
+
 			#img, #cover {
 				width:  900px;
 				height: 596px;			
