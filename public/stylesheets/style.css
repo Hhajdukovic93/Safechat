@@ -29,23 +29,21 @@ body {
 				height: 596px;			
 			}
 
+
 .paragraph {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-
 .button-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-
 .btn, .content {
 	background-color: #FFF;
 	color: #8E44AD;
 }
-
 .item {
 	list-style-type: none;
 }

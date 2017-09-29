@@ -2,12 +2,8 @@
 *   MANGOOSE
 \*  ------------------------------------------------ */
 
-
-
-
 //  Require node module
 var mongoose = require('mongoose');
-
 //  Connect with MongoDB 
 mongoose.connect('mongodb://localhost:27017/SafechatDB');
 
@@ -19,14 +15,4 @@ var personSchema = new Schema( {
 	password: {type: String, required: true}
 });
 
-
 module.exports = mongoose.model('Person', personSchema);
-
-
-/*
-personSchema.methods.standardizeName = function() {
-    this.name = this.name.toLowerCase();
-    return this.name;
-}*/
-
-

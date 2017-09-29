@@ -11,7 +11,6 @@ var fs   = require('fs');
 var express    = require('express');
 var socket_io  = require('socket.io');
 var bodyParser = require('body-parser');
-var pug        = require('pug');
 
 //  My modules
 var Person = require('./models/users.js');
@@ -22,7 +21,6 @@ var Person = require('./models/users.js');
 *   SERVER CONFIGURATION
 \*  ------------------------------------------------ */
 
-
 //  Make instance of express application
 var app = express();
 //  Make server
@@ -32,6 +30,7 @@ var io = socket_io.listen(server);
 //  Server listening on port 3000
 server.listen(process.env.PORT || 3000);
 console.log('Safechat server is running on port 3000...');
+
 //  Enable using HTTP body content 
 app.use(bodyParser.urlencoded({ extended: true}));
 //  View engine
@@ -59,13 +58,14 @@ app.get('/login', function(req, res) {
 });
 //  Route to chat (3) after login (2) 
 app.post('/chat', function(req, res) {
-	var query = {};
+	var query    = {};
 	var username = req.body.username;
 	var password = req.body.password;
+
 	query.username = username;
 	query.password = password;
 
-	Person.find( query,  function(err, result) {
+	Person.find(query, function(err, result) {
 		if(err) {
 			res.type('html').status(500);
 			res.send('Error : ' + err);
@@ -75,7 +75,7 @@ app.post('/chat', function(req, res) {
 				res.render('failed', {user : username});			
 			}
 			else {
-				res.sendFile(__dirname + '/public//chat.html');
+				res.sendFile(__dirname + '/public/chat.html');
 			}
 		}
 	});
@@ -118,7 +118,7 @@ io.on('connection', function(socket) {
 		socket.username = data;
 		//  Put new user in users array
 		agents.push(socket.username);
-		//  After every change redisplay user list ( ADD )
+		//  After every change redisplay user list
 		updateUsernames();
 	});
 
